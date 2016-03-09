@@ -1,12 +1,13 @@
 package com.kuo.mychart.model;
 
 /**
- * Created by Kuo on 2016/3/9.
+ * Created by Kuo on 2016/3/7.
  */
-public class LineData extends UntilData {
+public class BarData extends UntilData{
+
     private String axisX = "AxisX";
 
-    public LineData(int point, String labelText, int color) {
+    public BarData(int point, String labelText, int color) {
         super(point, labelText, color);
     }
 

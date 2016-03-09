@@ -11,12 +11,12 @@ import com.kuo.mychart.renderer.LineChartRenderer;
 import java.util.ArrayList;
 
 /**
- * Created by Kuo on 2016/3/8.
+ * Created by Kuo on 2016/3/9.
  */
 public class LineChartView extends AbsChartView {
 
-    private AbsChartRenderer absChartRenderer;
     private ArrayList<LineData> lineDatas;
+    private AbsChartRenderer absChartRenderer;
 
     public LineChartView(Context context) {
         super(context);
@@ -34,8 +34,11 @@ public class LineChartView extends AbsChartView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        absChartRenderer = new LineChartRenderer(getContext(), getWidth(), getHeight());
-        absChartRenderer.onDraw(canvas);
+        if(lineDatas != null) {
+            absChartRenderer = new LineChartRenderer(getContext(), getWidth(), getHeight(), lineDatas);
+            absChartRenderer.onDraw(canvas);
+        }
+
     }
 
     public void setLineDatas(ArrayList<LineData> lineDatas) {

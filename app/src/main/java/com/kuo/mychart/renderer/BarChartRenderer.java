@@ -3,19 +3,21 @@ package com.kuo.mychart.renderer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
-import com.kuo.mychart.model.LineData;
+import com.kuo.mychart.model.BarData;
 
 import java.util.ArrayList;
 
-/**
- * Created by Kuo on 2016/3/9.
+/*
+ * Created by Kuo on 2016/3/7.
  */
-public class LineChartRenderer extends AbsChartRenderer {
+public class BarChartRenderer extends AbsChartRenderer {
 
-    private ArrayList<LineData> lineDatas;
+    private RectF rectF;
+
+    private ArrayList<BarData> barDatas;
 
     private int maxPoint = 0;
     private int padding = 100;
@@ -25,17 +27,17 @@ public class LineChartRenderer extends AbsChartRenderer {
     private Paint linePaint;
     private Paint textPaint;
 
-    public LineChartRenderer(Context context, int width, int height, ArrayList<LineData> lineDatas) {
+    public BarChartRenderer(Context context, int width, int height, ArrayList<BarData> barDatas) {
         super(context, width, height);
 
-        this.lineDatas = lineDatas;
+        this.barDatas = barDatas;
 
         initPaint();
     }
 
     @Override
     public void onDraw(Canvas canvas) {
-        new DrawLineChartRenderer(canvas).run();
+        new DrawLineChartRunnable(canvas).run();
     }
 
     private void initPaint() {
@@ -47,6 +49,17 @@ public class LineChartRenderer extends AbsChartRenderer {
         textPaint = new Paint();
         textPaint.setTextSize(getTextSize());
         textPaint.setColor(getTextColor());
+    }
+
+    private void compareData() {
+
+        for(BarData barData : barDatas) {
+            if(maxPoint < barData.getPoint()) {
+                maxPoint = barData.getPoint();
+            }
+        }
+
+
     }
 
     private void drawXYLines(Canvas canvas) {
@@ -89,53 +102,60 @@ public class LineChartRenderer extends AbsChartRenderer {
 
     private void drawAxisX(Canvas canvas) {
 
-        float specText = xRange / lineDatas.size();
+        float specText = xRange / barDatas.size();
 
         int count = 0;
 
-        for(LineData lineData : lineDatas) {
+        for(BarData barData : barDatas) {
             count++;
 
             Rect textBounds = new Rect();
-            textPaint.getTextBounds(lineData.getAxisX(), 0, lineData.getAxisX().length(), textBounds);
+            textPaint.getTextBounds(barData.getAxisX(), 0, barData.getAxisX().length(), textBounds);
             int textHeight = textBounds.bottom - textBounds.top;
             int textWidth = textBounds.left - textBounds.right;
 
-            canvas.drawText(lineData.getAxisX(), specText * count + textWidth / 2, y + textHeight * 2, textPaint);
+            canvas.drawText(barData.getAxisX(), specText * count + textWidth / 2, y + textHeight * 2, textPaint);
         }
+
     }
 
     private void drawGraph(Canvas canvas) {
 
-        float specText = xRange / lineDatas.size();
         int count = 0;
 
-        for(LineData lineData : lineDatas) {
-            Path path = new Path();
-            path.moveTo(100, 320);//设置Path的起点
-            path.quadTo(150, 310, 170, 400); //设置贝塞尔曲线的控制点坐标和终点坐标
-            canvas.drawPath(path2, p);//画出贝塞尔曲线
+        float specText = xRange / barDatas.size();
 
-            //画点
-            canvas.drawPoint(60, 390, linePaint);/
-            canvas.drawPoints(new float[]{60,400,65,400,70,400}, p);//画多个点
+        for(BarData barData : barDatas) {
+
+            count++;
+
+            RectF rectF = new RectF(specText * count - (specText / 4), y - yRange / maxPoint * barData.getPoint(),
+                    specText * count + (specText / 4), y);
+
+            textPaint.setColor(barData.getColor());
+            canvas.drawRect(rectF, textPaint);
         }
+
     }
 
-    public class DrawLineChartRenderer implements Runnable {
+    public class DrawLineChartRunnable implements Runnable {
 
         private Canvas canvas;
 
-        public DrawLineChartRenderer(Canvas canvas) {
+        private DrawLineChartRunnable(Canvas canvas) {
             this.canvas = canvas;
         }
 
         @Override
         public void run() {
+
+            compareData();
+
             drawXYLines(canvas);
             drawSeparationLines(canvas);
             drawLabelsText(canvas);
             drawAxisX(canvas);
+            drawGraph(canvas);
         }
     }
 }

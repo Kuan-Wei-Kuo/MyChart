@@ -19,11 +19,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
 
+            <com.kuo.mychart.view.BarChartView
+                android:id="@+id/barChart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@+id/pieChart"/>
+
             <com.kuo.mychart.view.LineChartView
                 android:id="@+id/lineChart"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_below="@+id/pieChart"/>
+                android:layout_below="@+id/barChart" />
 
         </RelativeLayout>
 
