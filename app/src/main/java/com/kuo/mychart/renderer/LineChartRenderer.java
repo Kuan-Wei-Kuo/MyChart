@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.Rect;
 
 import com.kuo.mychart.model.LineData;
@@ -36,6 +37,15 @@ public class LineChartRenderer extends AbsChartRenderer {
     @Override
     public void onDraw(Canvas canvas) {
         new DrawLineChartRenderer(canvas).run();
+    }
+
+    private void compareData() {
+
+        for(LineData lineData : lineDatas) {
+            if(maxPoint < lineData.getPoint()) {
+                maxPoint = lineData.getPoint();
+            }
+        }
     }
 
     private void initPaint() {
@@ -110,15 +120,39 @@ public class LineChartRenderer extends AbsChartRenderer {
         float specText = xRange / lineDatas.size();
         int count = 0;
 
-        for(LineData lineData : lineDatas) {
-            Path path = new Path();
-            path.moveTo(100, 320);//设置Path的起点
-            path.quadTo(150, 310, 170, 400); //设置贝塞尔曲线的控制点坐标和终点坐标
-            canvas.drawPath(path2, p);//画出贝塞尔曲线
+        PointF pointF = new PointF(0, 0);
 
-            //画点
-            canvas.drawPoint(60, 390, linePaint);/
-            canvas.drawPoints(new float[]{60,400,65,400,70,400}, p);//画多个点
+        for(LineData lineData : lineDatas) {
+            count++;
+
+            PointF centerPointF = new PointF((specText * count + pointF.x) / 2, ((y - yRange / maxPoint * lineData.getPoint()) + pointF.y) / 2);
+
+            float nowX = specText * count;
+            float nowY = y - yRange / maxPoint * lineData.getPoint();
+            Path path = new Path();
+            path.moveTo(pointF.x, pointF.y);
+
+            if(pointF.y != 0 && pointF.x != 0) {
+
+                if(nowY < pointF.y)
+                    path.cubicTo(centerPointF.x, pointF.y, nowX - nowX / 4, nowY, nowX, nowY);
+                else
+                    path.cubicTo(centerPointF.x, pointF.y, centerPointF.x, centerPointF.y, nowX, nowY);
+                
+                linePaint.setStyle(Paint.Style.STROKE);
+                canvas.drawPath(path, linePaint);
+            }
+
+            pointF.set(specText * count, y - yRange / maxPoint * lineData.getPoint());
+        }
+
+        count = 0;
+
+        for(LineData lineData : lineDatas) {
+            count++;
+            textPaint.setColor(lineData.getColor());
+            textPaint.setStrokeWidth(36);
+            canvas.drawPoint(specText * count, y - yRange / maxPoint * lineData.getPoint(), textPaint);
         }
     }
 
@@ -132,10 +166,14 @@ public class LineChartRenderer extends AbsChartRenderer {
 
         @Override
         public void run() {
+
+            compareData();
+
             drawXYLines(canvas);
             drawSeparationLines(canvas);
             drawLabelsText(canvas);
             drawAxisX(canvas);
+            drawGraph(canvas);
         }
     }
 }
