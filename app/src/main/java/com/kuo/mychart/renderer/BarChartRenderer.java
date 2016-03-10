@@ -86,7 +86,7 @@ public class BarChartRenderer extends AbsChartRenderer {
     }
 
     private void drawLabelsText(Canvas canvas) {
-        for(int i = 0 ; i < 5 ; i++) {
+        for(int i = 0 ; i < (barDatas.size() + 1) ; i++) {
             float line = y - (yRange * 0.25f * i);
             String point = (int) (maxPoint * 0.25f * i) + "";
 

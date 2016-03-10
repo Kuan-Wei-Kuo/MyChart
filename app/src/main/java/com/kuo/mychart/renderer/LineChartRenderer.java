@@ -16,6 +16,8 @@ import java.util.ArrayList;
  */
 public class LineChartRenderer extends AbsChartRenderer {
 
+    private static final float DEFAULT_SEPARATION = 0.25f;
+
     private ArrayList<LineData> lineDatas;
 
     private int maxPoint = 0;
@@ -25,6 +27,7 @@ public class LineChartRenderer extends AbsChartRenderer {
 
     private Paint linePaint;
     private Paint textPaint;
+
 
     public LineChartRenderer(Context context, int width, int height, ArrayList<LineData> lineDatas) {
         super(context, width, height);
@@ -46,6 +49,15 @@ public class LineChartRenderer extends AbsChartRenderer {
                 maxPoint = lineData.getPoint();
             }
         }
+    }
+
+    private void init() {
+
+        Rect textBounds = new Rect();
+        textPaint.getTextBounds(String.valueOf(maxPoint), 0, String.valueOf(maxPoint).length(), textBounds);
+
+        padding = textBounds.left - textBounds.right;
+
     }
 
     private void initPaint() {
@@ -77,15 +89,15 @@ public class LineChartRenderer extends AbsChartRenderer {
     private void drawSeparationLines(Canvas canvas) {
 
         for(int i = 1 ; i <= 3 ; i++) {
-            float line = y - (yRange * 0.25f * i);
+            float line = y - (yRange * DEFAULT_SEPARATION * i);
             canvas.drawLine(padding, line, getWidth() - padding, line, linePaint);;
         }
     }
 
     private void drawLabelsText(Canvas canvas) {
-        for(int i = 0 ; i < 5 ; i++) {
-            float line = y - (yRange * 0.25f * i);
-            String point = (int) (maxPoint * 0.25f * i) + "";
+        for(int i = 0 ; i < (lineDatas.size() + 1) ; i++) {
+            float line = y - (yRange * DEFAULT_SEPARATION * i);
+            String point = (int) (maxPoint * DEFAULT_SEPARATION * i) + "";
 
             Rect textBounds = new Rect();
             //get text bounds, that can get the text width and height
@@ -129,17 +141,18 @@ public class LineChartRenderer extends AbsChartRenderer {
 
             float nowX = specText * count;
             float nowY = y - yRange / maxPoint * lineData.getPoint();
+
             Path path = new Path();
             path.moveTo(pointF.x, pointF.y);
 
             if(pointF.y != 0 && pointF.x != 0) {
-
                 if(nowY < pointF.y)
                     path.cubicTo(centerPointF.x, pointF.y, nowX - nowX / 4, nowY, nowX, nowY);
                 else
                     path.cubicTo(centerPointF.x, pointF.y, centerPointF.x, centerPointF.y, nowX, nowY);
-                
+
                 linePaint.setStyle(Paint.Style.STROKE);
+                linePaint.setColor(lineData.getColor());
                 canvas.drawPath(path, linePaint);
             }
 
