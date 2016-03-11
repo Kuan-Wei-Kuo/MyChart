@@ -23,11 +23,14 @@ public class LineChartRenderer extends AbsChartRenderer {
     private int maxPoint = 0;
     private int padding = 100;
 
-    private float x, y, xRange, yRange;
+    private float rangeX, rangeY;
 
     private Paint linePaint;
     private Paint textPaint;
 
+    private float horizontalStartX, horizontalStartY, horizontalEndX, horizontalEndY;
+    private float verticalStartX, verticalStartY, verticalEndX, verticalEndY;
+    private float positionX, positionY;
 
     public LineChartRenderer(Context context, int width, int height, ArrayList<LineData> lineDatas) {
         super(context, width, height);
@@ -49,15 +52,27 @@ public class LineChartRenderer extends AbsChartRenderer {
                 maxPoint = lineData.getPoint();
             }
         }
-    }
-
-    private void init() {
 
         Rect textBounds = new Rect();
         textPaint.getTextBounds(String.valueOf(maxPoint), 0, String.valueOf(maxPoint).length(), textBounds);
 
-        padding = textBounds.left - textBounds.right;
+        padding = Math.abs(textBounds.right - textBounds.left);
 
+        verticalStartX = padding;
+        verticalStartY = padding;
+        verticalEndX = padding;
+        verticalEndY = getHeight() - padding;
+
+        horizontalStartX = verticalEndX;
+        horizontalStartY = verticalEndY;
+        horizontalEndX = getWidth() - padding;
+        horizontalEndY = verticalEndY;
+
+        rangeX = getWidth() - padding - padding;
+        rangeY = getHeight() - padding - padding;
+
+        positionX = verticalStartX;
+        positionY = verticalEndY;
     }
 
     private void initPaint() {
@@ -72,38 +87,30 @@ public class LineChartRenderer extends AbsChartRenderer {
     }
 
     private void drawXYLines(Canvas canvas) {
-
-        x = padding;
-        y = getHeight() - padding;
-
-        xRange = getWidth() - padding - padding;
-        yRange = getHeight() - padding - padding;
-
-        //draw y line;
-        canvas.drawLine(padding, padding, padding, getHeight() - padding, linePaint);
-
-        //draw x line;
-        canvas.drawLine(padding, getHeight() - padding, getWidth() - padding, getHeight() - padding, linePaint);
+        //draw vertical line;
+        canvas.drawLine(verticalStartX, verticalStartY, verticalEndX, verticalEndY, linePaint);
+        //draw horizontal line;
+        canvas.drawLine(horizontalStartX, horizontalStartY, horizontalEndX, horizontalEndY, linePaint);
     }
 
     private void drawSeparationLines(Canvas canvas) {
 
         for(int i = 1 ; i <= 3 ; i++) {
-            float line = y - (yRange * DEFAULT_SEPARATION * i);
-            canvas.drawLine(padding, line, getWidth() - padding, line, linePaint);;
+            float line = horizontalEndY - (rangeY * DEFAULT_SEPARATION * i);
+            canvas.drawLine(horizontalStartX, line, horizontalEndX, line, linePaint);
         }
     }
 
-    private void drawLabelsText(Canvas canvas) {
+    private void drawAxisY(Canvas canvas) {
         for(int i = 0 ; i < (lineDatas.size() + 1) ; i++) {
-            float line = y - (yRange * DEFAULT_SEPARATION * i);
+            float line = positionY - (rangeY * DEFAULT_SEPARATION * i);
             String point = (int) (maxPoint * DEFAULT_SEPARATION * i) + "";
 
             Rect textBounds = new Rect();
             //get text bounds, that can get the text width and height
             textPaint.getTextBounds(point, 0, point.length(), textBounds);
-            int textHeight = textBounds.bottom - textBounds.top;
-            //int textWidth = textBounds.left - textBounds.right;
+            int textHeight = Math.abs(textBounds.bottom - textBounds.top);
+            int textWidth = Math.abs(textBounds.right - textBounds.left);
 
             canvas.drawText(point, 0, line + textHeight / 2, textPaint);
         }
@@ -111,7 +118,7 @@ public class LineChartRenderer extends AbsChartRenderer {
 
     private void drawAxisX(Canvas canvas) {
 
-        float specText = xRange / lineDatas.size();
+        float specText = rangeX / lineDatas.size();
 
         int count = 0;
 
@@ -121,15 +128,15 @@ public class LineChartRenderer extends AbsChartRenderer {
             Rect textBounds = new Rect();
             textPaint.getTextBounds(lineData.getAxisX(), 0, lineData.getAxisX().length(), textBounds);
             int textHeight = textBounds.bottom - textBounds.top;
-            int textWidth = textBounds.left - textBounds.right;
+            int textWidth = textBounds.right - textBounds.left;
 
-            canvas.drawText(lineData.getAxisX(), specText * count + textWidth / 2, y + textHeight * 2, textPaint);
+            canvas.drawText(lineData.getAxisX(), specText * count - textWidth / 2, positionY + textHeight, textPaint);
         }
     }
 
     private void drawGraph(Canvas canvas) {
 
-        float specText = xRange / lineDatas.size();
+        float specText = rangeX / lineDatas.size();
         int count = 0;
 
         PointF pointF = new PointF(0, 0);
@@ -137,10 +144,10 @@ public class LineChartRenderer extends AbsChartRenderer {
         for(LineData lineData : lineDatas) {
             count++;
 
-            PointF centerPointF = new PointF((specText * count + pointF.x) / 2, ((y - yRange / maxPoint * lineData.getPoint()) + pointF.y) / 2);
+            PointF centerPointF = new PointF((specText * count + pointF.x) / 2, ((positionY - rangeY / maxPoint * lineData.getPoint()) + pointF.y) / 2);
 
             float nowX = specText * count;
-            float nowY = y - yRange / maxPoint * lineData.getPoint();
+            float nowY = positionY - rangeY / maxPoint * lineData.getPoint();
 
             Path path = new Path();
             path.moveTo(pointF.x, pointF.y);
@@ -156,7 +163,7 @@ public class LineChartRenderer extends AbsChartRenderer {
                 canvas.drawPath(path, linePaint);
             }
 
-            pointF.set(specText * count, y - yRange / maxPoint * lineData.getPoint());
+            pointF.set(specText * count, positionY - rangeY / maxPoint * lineData.getPoint());
         }
 
         count = 0;
@@ -165,7 +172,7 @@ public class LineChartRenderer extends AbsChartRenderer {
             count++;
             textPaint.setColor(lineData.getColor());
             textPaint.setStrokeWidth(36);
-            canvas.drawPoint(specText * count, y - yRange / maxPoint * lineData.getPoint(), textPaint);
+            canvas.drawPoint(specText * count, positionY - rangeY / maxPoint * lineData.getPoint(), textPaint);
         }
     }
 
@@ -184,7 +191,7 @@ public class LineChartRenderer extends AbsChartRenderer {
 
             drawXYLines(canvas);
             drawSeparationLines(canvas);
-            drawLabelsText(canvas);
+            drawAxisY(canvas);
             drawAxisX(canvas);
             drawGraph(canvas);
         }

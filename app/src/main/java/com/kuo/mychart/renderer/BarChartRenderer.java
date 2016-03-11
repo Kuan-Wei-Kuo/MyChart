@@ -102,19 +102,24 @@ public class BarChartRenderer extends AbsChartRenderer {
 
     private void drawAxisX(Canvas canvas) {
 
-        float specText = xRange / barDatas.size();
-
         int count = 0;
+        int padding = 30;
+
+        float width = (xRange - padding) / barDatas.size() / 2;
+        float left, right;
 
         for(BarData barData : barDatas) {
-            count++;
 
             Rect textBounds = new Rect();
             textPaint.getTextBounds(barData.getAxisX(), 0, barData.getAxisX().length(), textBounds);
             int textHeight = textBounds.bottom - textBounds.top;
-            int textWidth = textBounds.left - textBounds.right;
+            int textWidth = textBounds.right - textBounds.left;
 
-            canvas.drawText(barData.getAxisX(), specText * count + textWidth / 2, y + textHeight * 2, textPaint);
+            left = x + padding + ((width * 2) * count);
+
+            canvas.drawText(barData.getAxisX(), left + (width / 2) - textWidth / 2, y + textHeight, textPaint);
+
+            count++;
         }
 
     }
@@ -122,18 +127,25 @@ public class BarChartRenderer extends AbsChartRenderer {
     private void drawGraph(Canvas canvas) {
 
         int count = 0;
+        int padding = 30;
 
-        float specText = xRange / barDatas.size();
+        float width = (xRange - padding) / barDatas.size() / 2;
+
+        float left, top, right, bottom;
 
         for(BarData barData : barDatas) {
 
-            count++;
+            left = x + padding + ((width * 2) * count);
+            top = y - yRange / maxPoint * barData.getPoint();
+            right = left + width;
+            bottom = y;
 
-            RectF rectF = new RectF(specText * count - (specText / 4), y - yRange / maxPoint * barData.getPoint(),
-                    specText * count + (specText / 4), y);
+            RectF rectF = new RectF(left, top, right, bottom);
 
             textPaint.setColor(barData.getColor());
             canvas.drawRect(rectF, textPaint);
+
+            count++;
         }
 
     }

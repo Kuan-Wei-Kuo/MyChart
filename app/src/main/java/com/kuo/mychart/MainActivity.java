@@ -1,5 +1,6 @@
 package com.kuo.mychart;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -24,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<PieData> pieDatas = new ArrayList<>();
 
-        String[] axisXs = {"1", "2", "3", "4"};
-        int[] points = {80, 40, 50, 20};
-        int[] colors = {ChartRendererUntil.CHART_GREEN, ChartRendererUntil.CHART_GREY, ChartRendererUntil.CHART_RED, ChartRendererUntil.CHART_YELLOW};
+        String[] axisXs = {"2016/01/01", "2016/01/02", "2016/01/03", "2016/01/04", "2016/01/05", "2016/01/06", "2016/01/07", "2016/01/08"};
+        int[] points = {80, 40, 50, 20, 150, 200, 100, 25};
+        int[] colors = {ChartRendererUntil.CHART_GREEN, ChartRendererUntil.CHART_GREY, ChartRendererUntil.CHART_RED, ChartRendererUntil.CHART_YELLOW, Color.CYAN, Color.BLUE, ChartRendererUntil.CHART_GREY, ChartRendererUntil.CHART_GREY};
 
         for(int i = 0 ; i < points.length ; i++) {
             PieData pieData = new PieData(points[i], colors[i], "", -1);
