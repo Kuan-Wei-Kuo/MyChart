@@ -5,6 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.FloatMath;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import com.kuo.mychart.model.BarData;
 
@@ -40,7 +43,39 @@ public class BarChartRenderer extends AbsChartRenderer {
         new DrawLineChartRunnable(canvas).run();
     }
 
+    private float oldX, oldY;
+
+    @Override
+    public void touch(MotionEvent event, int state) {
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+
+                oldX = x - event.getX();
+                oldY = event.getY();
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+
+                float dX = event.getX() + oldX;
+                float dY = event.getY() - oldY;
+
+                x = dX;
+
+                Log.d("x", x + "");
+
+                break;
+        }
+
+    }
+
     private void initPaint() {
+
+        x = padding;
+        y = getHeight() - padding;
+
+        xRange = getWidth() - padding - padding;
+        yRange = getHeight() - padding - padding;
 
         linePaint = new Paint();
         linePaint.setStrokeWidth(5);
@@ -59,17 +94,9 @@ public class BarChartRenderer extends AbsChartRenderer {
             }
         }
 
-
     }
 
     private void drawXYLines(Canvas canvas) {
-
-        x = padding;
-        y = getHeight() - padding;
-
-        xRange = getWidth() - padding - padding;
-        yRange = getHeight() - padding - padding;
-
         //draw y line;
         canvas.drawLine(padding, padding, padding, getHeight() - padding, linePaint);
 
@@ -100,6 +127,8 @@ public class BarChartRenderer extends AbsChartRenderer {
         }
     }
 
+    private int zoom;
+
     private void drawAxisX(Canvas canvas) {
 
         int count = 0;
@@ -110,14 +139,21 @@ public class BarChartRenderer extends AbsChartRenderer {
 
         for(BarData barData : barDatas) {
 
-            Rect textBounds = new Rect();
-            textPaint.getTextBounds(barData.getAxisX(), 0, barData.getAxisX().length(), textBounds);
-            int textHeight = textBounds.bottom - textBounds.top;
-            int textWidth = textBounds.right - textBounds.left;
+            //left = x + padding + ((textWidth + padding) * count);
 
-            left = x + padding + ((width * 2) * count);
+            if(count % 2 != 0) {
 
-            canvas.drawText(barData.getAxisX(), left + (width / 2) - textWidth / 2, y + textHeight, textPaint);
+                Rect textBounds = new Rect();
+                textPaint.getTextBounds(barData.getAxisX(), 0, barData.getAxisX().length(), textBounds);
+                int textHeight = textBounds.bottom - textBounds.top;
+                int textWidth = textBounds.right - textBounds.left;
+
+                left = x + padding + ((width * 2) * count);
+
+                Log.d("x1", x + "");
+
+                canvas.drawText(barData.getAxisX(), left - width / 2, y + textHeight, textPaint);
+            }
 
             count++;
         }
@@ -135,9 +171,14 @@ public class BarChartRenderer extends AbsChartRenderer {
 
         for(BarData barData : barDatas) {
 
+            Rect textBounds = new Rect();
+            textPaint.getTextBounds(barData.getAxisX(), 0, barData.getAxisX().length(), textBounds);
+            int textWidth = textBounds.right - textBounds.left;
+
+            //left = x + padding + ((textWidth + padding) * count) + textWidth / 4;
             left = x + padding + ((width * 2) * count);
             top = y - yRange / maxPoint * barData.getPoint();
-            right = left + width;
+            right = left + textWidth / 2;
             bottom = y;
 
             RectF rectF = new RectF(left, top, right, bottom);
@@ -148,6 +189,14 @@ public class BarChartRenderer extends AbsChartRenderer {
             count++;
         }
 
+    }
+
+    private double distance(MotionEvent event) {
+
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+
+        return Math.sqrt(x * x + y * y);
     }
 
     public class DrawLineChartRunnable implements Runnable {

@@ -3,6 +3,7 @@ package com.kuo.mychart.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import com.kuo.mychart.model.BarData;
 import com.kuo.mychart.renderer.AbsChartRenderer;
@@ -35,13 +36,21 @@ public class BarChartView extends AbsChartView {
         super.onDraw(canvas);
 
         if(barDatas != null) {
-            absChartRenderer = new BarChartRenderer(getContext(), getWidth(), getHeight(), barDatas);
             absChartRenderer.onDraw(canvas);
         }
     }
 
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        absChartRenderer.touch(event, 0);
+        invalidate();
+        return true;
+    }
+
     public void setBarDatas(ArrayList<BarData> barDatas) {
         this.barDatas = barDatas;
+        absChartRenderer = new BarChartRenderer(getContext(), getWidth(), getHeight(), barDatas);
         invalidate();
     }
 }

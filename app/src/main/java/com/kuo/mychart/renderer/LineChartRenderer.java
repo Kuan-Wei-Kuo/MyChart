@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 
 import com.kuo.mychart.model.LineData;
 
@@ -43,6 +44,11 @@ public class LineChartRenderer extends AbsChartRenderer {
     @Override
     public void onDraw(Canvas canvas) {
         new DrawLineChartRenderer(canvas).run();
+    }
+
+    @Override
+    public void touch(MotionEvent event, int state) {
+
     }
 
     private void compareData() {

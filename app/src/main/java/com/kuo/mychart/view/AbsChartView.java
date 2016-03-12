@@ -3,6 +3,7 @@ package com.kuo.mychart.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by Kuo on 2016/3/7.
@@ -20,4 +21,5 @@ public abstract class AbsChartView extends View {
     public AbsChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
 }

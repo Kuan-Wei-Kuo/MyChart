@@ -2,6 +2,7 @@ package com.kuo.mychart.renderer;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 
 import com.kuo.mychart.until.ChartRendererUntil;
 
@@ -18,12 +19,13 @@ public abstract class AbsChartRenderer {
         this.width = width;
         this.height = height;
 
-        textSize = ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 18);
+        textSize = ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 15);
         textColor = ChartRendererUntil.CHART_GREEN;
         lineColor = ChartRendererUntil.CHART_GREY;
     }
 
     public abstract void onDraw(Canvas canvas);
+    public abstract void touch(MotionEvent event, int state);
 
     public int getWidth() {
         return width;

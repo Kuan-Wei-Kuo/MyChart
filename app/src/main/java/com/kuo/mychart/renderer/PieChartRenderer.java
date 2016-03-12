@@ -8,6 +8,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.content.ContextCompat;
+import android.view.MotionEvent;
 
 import com.kuo.mychart.model.PieData;
 import com.kuo.mychart.R;
@@ -39,6 +40,11 @@ public class PieChartRenderer extends AbsChartRenderer {
     @Override
     public void onDraw(Canvas canvas) {
         new DrawPieRendererRunnable(canvas).run();
+    }
+
+    @Override
+    public void touch(MotionEvent event, int state) {
+
     }
 
     private void comparePieData() {

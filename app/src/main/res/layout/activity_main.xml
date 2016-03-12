@@ -31,6 +31,11 @@
                 android:layout_height="200dp"
                 android:layout_below="@+id/barChart" />
 
+            <com.kuo.mychart.view.ViewAnamatorTest
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@+id/lineChart"  />
+
         </RelativeLayout>
 
     </ScrollView>
