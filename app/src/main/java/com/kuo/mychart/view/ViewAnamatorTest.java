@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -27,6 +28,11 @@ public class ViewAnamatorTest extends View {
     private float padding = 0;
     private float textWidth, maxTextHeight;
     private float textTotalWidth;
+    private ViewPort contentViewPort;
+    private float minScaleFactor = 0.1f;
+    private float maxScaleFactor = 5.0f;
+    private float scaleFactor = 1.0f;
+    private float maxWidth;
 
     private ScaleGestureDetector scaleGestureDetector;
 
@@ -50,7 +56,10 @@ public class ViewAnamatorTest extends View {
         init();
     }
 
-    private Matrix mScaleMatrix = new Matrix();
+    private ArrayList<ViewPort> viewPorts = new ArrayList<>();
+    private ArrayList<ViewPort> margins = new ArrayList<>();
+
+    private float posX, posY, lastTouchX, lastTouchY;
 
     private void init() {
 
@@ -62,28 +71,60 @@ public class ViewAnamatorTest extends View {
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
 
-                float scale = 2.0f - detector.getScaleFactor();
+                //lastScaleTime = System.currentTimeMillis();
+
+                float scale = detector.getScaleFactor();
 
                 if (Float.isInfinite(scale)) {
                     scale = 1;
                 }
 
+                float cnewWidth = scale * contentViewPort.width();
+                float cdiffX = detector.getFocusX() - contentViewPort.left;
+                cdiffX = cdiffX * scale - cdiffX;
+
+                float cleft = contentViewPort.left - cdiffX;
+                float cright = cleft + cnewWidth;
+
+                if (cright - cleft < maxWidth) {
+                    cright = cleft + maxWidth;
+                    if (cleft < 0) {
+                        cleft = 0;
+                        cright = cleft + maxWidth;
+                    } else if (cright > maxWidth) {
+                        cright = maxWidth;
+                        cleft = cright - maxWidth;
+                    }
+                }
+
+                contentViewPort.left = Math.min(0, cleft);
+                contentViewPort.right = Math.min(maxWidth, cright);
+
+                int count = 0;
                 for(ViewPort viewPort : viewPorts) {
 
                     float newWidth = scale * viewPort.width();
+                    float oldLeft = count * (graphWidth + graphPadding);
+                    float oldRight = oldLeft + graphWidth;
 
-                    float left = viewPort.left * scale;
+                    float diffX = detector.getFocusX() - viewPort.left;
+                    diffX = diffX * scale - diffX;
+
+                    float left = contentViewPort.left + count * (newWidth + graphPadding);
                     float right = left + newWidth;
 
-                    viewPort.left = left;
-                    viewPort.right = right;
+                    if(right - left > graphWidth) {
+                        viewPort.left = left;
+                        viewPort.right = right;
+                    }
 
                     Log.d("left", left + "");
+
+                    count++;
                 }
 
-                Log.d("scale", scale + "");
+                ViewCompat.postInvalidateOnAnimation(ViewAnamatorTest.this);
 
-                invalidate();
                 return false;
             }
 
@@ -101,6 +142,9 @@ public class ViewAnamatorTest extends View {
         String[] axisXs = {"01/01", "01/02", "01/03", "01/04", "01/05", "01/06", "01/07", "01/08"};
         int count = 0;
 
+        float contentWidth = 0;
+        float contentHeight = 0;
+
         for(String string : axisXs) {
 
             float left = count * (graphWidth + graphPadding);
@@ -111,9 +155,65 @@ public class ViewAnamatorTest extends View {
             ViewPort viewPort = new ViewPort(left, top, right, bottom);
             viewPorts.add(viewPort);
 
+            float margin_left = right;
+            float margin_top = top;
+            float margin_right = margin_left + graphPadding;
+            float margin_bottom = bottom;
+
+            ViewPort maring = new ViewPort(margin_left, margin_top, margin_right, margin_bottom);
+            margins.add(maring);
+
+            contentWidth += viewPort.width();
+            contentHeight += viewPort.height();
+
             count++;
         }
+
+        maxWidth = contentWidth;
+        contentViewPort = new ViewPort(0, 0, contentWidth, contentHeight);
     }
+
+    private final ScaleGestureDetector.OnScaleGestureListener mScaleGestureListener = new ScaleGestureDetector.OnScaleGestureListener() {
+
+        private PointF viewportFocus = new PointF();
+        private float lastSpanX;
+        private float lastSpanY;
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+
+            float spanX = detector.getCurrentSpanX();
+            float spanY = detector.getCurrentSpanY();
+            float focusX = detector.getFocusX();
+            float focusY = detector.getFocusY();
+
+            for(ViewPort viewPort : viewPorts) {
+
+                float newWidth = lastSpanX / spanX * viewPort.width();
+                float newHeight = lastSpanY / spanY * viewPort.height();
+
+            }
+
+            //float left = viewportFocus.x - newWidth * (focusX - mContentRect.left) / mContentRect.width();
+
+            lastSpanX = spanX;
+            lastSpanY = spanY;
+
+            return false;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            lastSpanX = detector.getCurrentSpanX();
+            lastSpanY = detector.getCurrentSpanY();
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+
+        }
+    };
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -172,13 +272,15 @@ public class ViewAnamatorTest extends View {
     private float graphWidth = 100;
     private float graphheight = 200;
 
-    private ArrayList<ViewPort> viewPorts = new ArrayList<>();
-
     private void drawGraph(Canvas canvas) {
-        for(ViewPort rectF : viewPorts) {
+        for(int i = 0 ; i < viewPorts.size() ; i++) {
+            axisPaint.setColor(ChartRendererUntil.CHART_GREEN);
+            canvas.drawRect(viewPorts.get(i), axisPaint);
 
-            canvas.drawRect(rectF, axisPaint);
+            //axisPaint.setColor(ChartRendererUntil.CHART_RED);
+            //canvas.drawRect(margins.get(i), axisPaint);
         }
+        axisPaint.setColor(ChartRendererUntil.CHART_GREY);
     }
 
     private float downX, downY, dScrollX, dPaddingX, dScale, dPadding;
