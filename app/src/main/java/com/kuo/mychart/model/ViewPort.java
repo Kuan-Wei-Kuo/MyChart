@@ -5,16 +5,12 @@ import android.graphics.RectF;
 /**
  * Created by Kuo on 2016/3/16.
  */
-public class ViewPort extends RectF {
+public class Viewport extends RectF {
 
-    private boolean isScaleEnable = true;
+    private float minHeight, minWidth, maxHeight, maxWidth;
 
-    public ViewPort(float left, float top, float right, float bottom) {
+    public Viewport(float left, float top, float right, float bottom) {
         set(left, top, right, bottom);
-    }
-
-    public void setIsScaleEnable(boolean isScaleEnable) {
-        this.isScaleEnable = isScaleEnable;
     }
 
     @Override
@@ -22,7 +18,40 @@ public class ViewPort extends RectF {
         super.set(left, top, right, bottom);
     }
 
-    public boolean isScaleEnable() {
-        return isScaleEnable;
+    @Override
+    public void set(RectF src) {
+        super.set(src);
+    }
+
+    public void setMinHeight(float minHeight) {
+        this.minHeight = minHeight;
+    }
+
+    public void setMinWidth(float minWidth) {
+        this.minWidth = minWidth;
+    }
+
+    public void setMaxWidth(float maxWidth) {
+        this.maxWidth = maxWidth;
+    }
+
+    public void setMaxHeight(float maxHeight) {
+        this.maxHeight = maxHeight;
+    }
+
+    public float getMaxHeight() {
+        return maxHeight;
+    }
+
+    public float getMaxWidth() {
+        return maxWidth;
+    }
+
+    public float getMinHeight() {
+        return minHeight;
+    }
+
+    public float getMinWidth() {
+        return minWidth;
     }
 }
