@@ -2,7 +2,7 @@ package com.kuo.mychart.model;
 
 import android.graphics.RectF;
 
-/**
+/*
  * Created by Kuo on 2016/3/16.
  */
 public class Viewport extends RectF {

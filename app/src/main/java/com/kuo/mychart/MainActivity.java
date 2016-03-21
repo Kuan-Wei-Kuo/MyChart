@@ -3,6 +3,11 @@ package com.kuo.mychart;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.kuo.mychart.model.BarData;
 import com.kuo.mychart.model.LineData;
@@ -11,6 +16,7 @@ import com.kuo.mychart.until.ChartRendererUntil;
 import com.kuo.mychart.view.BarChartView;
 import com.kuo.mychart.view.LineChartView;
 import com.kuo.mychart.view.PieChartView;
+import com.kuo.mychart.view.ScaleImage;
 
 import java.util.ArrayList;
 

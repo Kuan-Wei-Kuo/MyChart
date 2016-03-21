@@ -5,7 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 
+import com.kuo.mychart.handler.ChartTouchHandler;
 import com.kuo.mychart.model.Viewport;
 import com.kuo.mychart.until.ChartRendererUntil;
 
@@ -20,15 +22,11 @@ public class ViewAnamatorTest extends AbsChartView {
     private float textWidth, maxTextHeight;
 
     public ViewAnamatorTest(Context context) {
-        super(context);
-
-        init();
+        this(context, null, 0);
     }
 
     public ViewAnamatorTest(Context context, AttributeSet attrs) {
-        super(context, attrs);
-
-        init();
+        this(context, attrs, 0);
     }
 
     public ViewAnamatorTest(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -44,6 +42,7 @@ public class ViewAnamatorTest extends AbsChartView {
         axisPaint = new Paint();
         axisPaint.setColor(ChartRendererUntil.CHART_GREY);
         axisPaint.setTextSize(ChartRendererUntil.dp2px(getContext().getResources().getDisplayMetrics().density, 15));
+
     }
 
     @Override
@@ -58,14 +57,17 @@ public class ViewAnamatorTest extends AbsChartView {
 
     private void prepareRect() {
 
+        viewports.clear();
+
         String[] axisXs = {"01/01", "01/02", "01/03", "01/04", "01/05", "01/06", "01/07", "01/08"};
         int count = 0;
 
-        float columnWidth = getViewport().getMaxWidth() / axisXs.length;
+        float columnWidth = getViewport().width() / axisXs.length * 0.8f;
+        float columnMargin = getViewport().width() / axisXs.length * 0.2f;
 
         for(String string : axisXs) {
 
-            float left = count * (columnWidth + graphPadding);
+            float left = getViewport().left + count * (columnWidth + columnMargin);
             float top = 0;
             float right = left + columnWidth;
             float bottom = graphheight;
@@ -116,12 +118,5 @@ public class ViewAnamatorTest extends AbsChartView {
             canvas.drawRect(viewports.get(i), axisPaint);
         }
         axisPaint.setColor(ChartRendererUntil.CHART_GREY);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        setViewport(new Viewport(0, 0, MeasureSpec.getSize(widthMeasureSpec),  MeasureSpec.getSize(heightMeasureSpec)));
     }
 }

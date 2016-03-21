@@ -1,11 +1,19 @@
 package com.kuo.mychart.handler;
 
+import android.animation.Animator;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Matrix;
+import android.graphics.Point;
 import android.support.v4.view.ViewCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.widget.OverScroller;
 
 import com.kuo.mychart.model.Viewport;
+import com.kuo.mychart.presenter.ChartCompute;
 import com.kuo.mychart.view.AbsChartView;
 
 /*
@@ -15,50 +23,77 @@ public class ChartTouchHandler {
 
     private Context context;
     private ScaleGestureDetector scaleGestureDetector;
-    private Viewport chartViewport;
+    private OverScroller overScroller;
     private AbsChartView absChartView;
+
+    private Viewport startScrollViewport;
 
     public ChartTouchHandler(Context context, AbsChartView absChartView) {
         this.context = context;
         this.absChartView = absChartView;
-        chartViewport = absChartView.getViewport();
+
+        init();
     }
 
     private void init() {
         scaleGestureDetector = new ScaleGestureDetector(context, new ChartScaleGestureListener());
+        overScroller = new OverScroller(context);
     }
 
     /* Record to point down X value */
     private float offestX;
+    private ChartCompute chartCompute;
 
-    public boolean onTouchEvent(MotionEvent event) {
+    private int state = -1;
+
+    private static final int SCROLL = 0;
+    private static final int ZOOM = 1;
+
+    public boolean onTouchEvent(MotionEvent event, final ChartCompute chartCompute) {
+
+        this.chartCompute = chartCompute;
 
         if(event.getPointerCount() > 1) {
-
-            scaleGestureDetector.onTouchEvent(event);
-
+            state = ZOOM;
+            return scaleGestureDetector.onTouchEvent(event);
         } else {
 
             switch (event.getAction()) {
 
                 case MotionEvent.ACTION_DOWN:
 
-                    offestX = event.getX();
+                    state = SCROLL;
+                    offestX = chartCompute.getCurViewport().left - event.getX();
 
                     break;
                 case MotionEvent.ACTION_MOVE:
 
-                    float left = event.getX() + offestX;
-                    float right = left + chartViewport.width();
+                    if(state == SCROLL) {
+                        float left = event.getX() + offestX;
+                        float right = left + chartCompute.getCurViewport().width();
 
-                    chartViewport.set(left, chartViewport.top, right, chartViewport.bottom);
+                        if(left > chartCompute.getMinViewport().left) {
+                            left = chartCompute.getMinViewport().left;
+                            right = chartCompute.getCurViewport().right;
+                        }
 
-                    ViewCompat.postInvalidateOnAnimation(absChartView);
+                        if(right < chartCompute.getMinViewport().right) {
+                            left = chartCompute.getCurViewport().left;
+                            right = chartCompute.getMinViewport().right;
+
+                        }
+
+                        chartCompute.getCurViewport().left = left;
+                        chartCompute.getCurViewport().right = right;
+
+                        ViewCompat.postInvalidateOnAnimation(absChartView);
+                    }
                     break;
             }
         }
         return true;
     }
+
 
     public class ChartScaleGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
 
@@ -67,31 +102,33 @@ public class ChartTouchHandler {
 
             float scale = detector.getScaleFactor();
 
+
             if (Float.isInfinite(scale)) {
                 scale = 1;
             }
 
-            float newWidth = scale * chartViewport.width();
+            float newWidth = scale * chartCompute.getCurViewport().width();
 
-            float offestX = (detector.getFocusX() - chartViewport.left) * scale - (detector.getFocusX() - chartViewport.left);
+            float offestX = detector.getFocusX() - chartCompute.getCurViewport().left;
+            offestX = offestX * scale - offestX;
 
-            float left = chartViewport.left - offestX;
+            float left = chartCompute.getCurViewport().left - offestX;
 
             float right = left + newWidth;
 
-            if (right - left < chartViewport.width()) {
-                right = left + chartViewport.width();
+            if (right - left < chartCompute.getMinViewport().width()) {
+                right = left + chartCompute.getMinViewport().width();
                 if (left < 0) {
                     left = 0;
-                    right = left + chartViewport.width();
-                } else if (right > chartViewport.width()) {
-                    right = chartViewport.width();
-                    left = right - chartViewport.width();
+                    right = left + chartCompute.getMinViewport().width();
+                } else if (right > chartCompute.getMinViewport().width()) {
+                    right = chartCompute.getMinViewport().width();
+                    left = right - chartCompute.getMinViewport().width();
                 }
             }
 
-            chartViewport.left = Math.min(chartViewport.left, left);
-            chartViewport.right = Math.min(chartViewport.right, right);
+            chartCompute.getCurViewport().left = Math.min(chartCompute.getMinViewport().left, left);
+            chartCompute.getCurViewport().right = Math.max(chartCompute.getMinViewport().right, right);
 
             ViewCompat.postInvalidateOnAnimation(absChartView);
 
