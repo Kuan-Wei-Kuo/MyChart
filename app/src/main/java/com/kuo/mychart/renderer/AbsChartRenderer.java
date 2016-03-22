@@ -2,6 +2,7 @@ package com.kuo.mychart.renderer;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.view.MotionEvent;
 
 import com.kuo.mychart.until.ChartRendererUntil;
@@ -13,7 +14,17 @@ public abstract class AbsChartRenderer {
 
     protected int width, height, textSize, textColor, lineColor;
     protected Context context;
+    protected Paint rectPaint;
 
+    public AbsChartRenderer() {}
+
+    public AbsChartRenderer(Context context) {
+        this.context = context;
+
+        textSize = ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 15);
+        textColor = ChartRendererUntil.CHART_GREEN;
+        lineColor = ChartRendererUntil.CHART_GREY;
+    }
     public AbsChartRenderer(Context context, int width, int height) {
         this.context = context;
         this.width = width;
@@ -61,5 +72,9 @@ public abstract class AbsChartRenderer {
 
     public int getLineColor() {
         return lineColor;
+    }
+
+    public Paint getRectPaint() {
+        return rectPaint;
     }
 }
