@@ -14,7 +14,7 @@ public abstract class AbsChartRenderer {
 
     protected int width, height, textSize, textColor, lineColor;
     protected Context context;
-    protected Paint rectPaint;
+    protected Paint rectPaint, linePaint;
 
     public AbsChartRenderer() {}
 
