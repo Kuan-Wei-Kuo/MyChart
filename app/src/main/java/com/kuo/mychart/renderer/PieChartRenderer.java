@@ -29,8 +29,8 @@ public class PieChartRenderer extends AbsChartRenderer {
 
     private float radius;
 
-    public PieChartRenderer(Context context, int width, int height, ArrayList<PieData> pieDatas) {
-        super(context, width, height);
+    public PieChartRenderer(Context context) {
+        super(context);
 
         this.pieDatas = pieDatas;
 
@@ -44,6 +44,16 @@ public class PieChartRenderer extends AbsChartRenderer {
 
     @Override
     public void touch(MotionEvent event, int state) {
+
+    }
+
+    @Override
+    public void prepareCompute() {
+
+    }
+
+    @Override
+    public void computeGraph() {
 
     }
 
@@ -72,7 +82,7 @@ public class PieChartRenderer extends AbsChartRenderer {
         linePaint.setAntiAlias(true);
     }
 
-    private void drawGraph(Canvas canvas) {
+    public void drawGraph(Canvas canvas) {
 
         int pieSpec = getWidth() >= getHeight() ? getHeight() / 2 : getWidth() / 2;
 

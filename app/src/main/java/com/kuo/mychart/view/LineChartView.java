@@ -1,48 +1,47 @@
 package com.kuo.mychart.view;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 
+import com.kuo.mychart.listener.LineChartListener;
 import com.kuo.mychart.model.LineData;
 import com.kuo.mychart.renderer.AbsChartRenderer;
 import com.kuo.mychart.renderer.LineChartRenderer;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by Kuo on 2016/3/9.
  */
-public class LineChartView extends AbsChartView {
+public class LineChartView extends AbsChartView implements LineChartListener{
 
-    private ArrayList<LineData> lineDatas;
-    private AbsChartRenderer absChartRenderer;
+    private ArrayList<LineData> lineData;
 
     public LineChartView(Context context) {
-        super(context);
+        this(context, null, 0);
     }
 
     public LineChartView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public LineChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setAbsChartRenderer(new LineChartRenderer(getContext(), this, this));
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        if(lineDatas != null) {
-            absChartRenderer = new LineChartRenderer(getContext(), getWidth(), getHeight(), lineDatas);
-            absChartRenderer.onDraw(canvas);
-        }
-
+    public void setAbsChartRenderer(AbsChartRenderer absChartRenderer) {
+        super.setAbsChartRenderer(absChartRenderer);
     }
 
-    public void setLineDatas(ArrayList<LineData> lineDatas) {
-        this.lineDatas = lineDatas;
-        invalidate();
+    @Override
+    public ArrayList<LineData> getLineData() {
+        return lineData;
+    }
+
+    @Override
+    public void setLineData(ArrayList<LineData> lineData) {
+        this.lineData = lineData;
     }
 }

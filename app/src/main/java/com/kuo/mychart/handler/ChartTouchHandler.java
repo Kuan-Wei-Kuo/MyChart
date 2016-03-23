@@ -3,6 +3,7 @@ package com.kuo.mychart.handler;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.VelocityTracker;
@@ -165,14 +166,19 @@ public class ChartTouchHandler {
 
             if (right - left < chartCompute.getMinViewport().width()) {
                 right = left + chartCompute.getMinViewport().width();
-                if (left < 0) {
-                    left = 0;
+                if (left < chartCompute.getMinViewport().left) {
+                    left = chartCompute.getMinViewport().left;
                     right = left + chartCompute.getMinViewport().width();
-                } else if (right > chartCompute.getMinViewport().width()) {
-                    right = chartCompute.getMinViewport().width();
+                } else if (right > chartCompute.getMinViewport().right) {
+                    right = chartCompute.getMinViewport().right;
                     left = right - chartCompute.getMinViewport().width();
                 }
             }
+
+            Log.d("chartCompute left", chartCompute.getMinViewport().left + "");
+
+            Log.d("left", left + "");
+            Log.d("right", right + "");
 
             chartCompute.getCurViewport().left = Math.min(chartCompute.getMinViewport().left, left);
             chartCompute.getCurViewport().right = Math.max(chartCompute.getMinViewport().right, right);

@@ -14,30 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.kuo.mychart.view.PieChartView
-                android:id="@+id/pieChart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:visibility="gone" />
-
-            <com.kuo.mychart.view.BarChartView
-                android:id="@+id/barChart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_below="@+id/pieChart"
-                android:visibility="gone"/>
-
             <com.kuo.mychart.view.LineChartView
-                android:id="@+id/lineChart"
+                android:id="@+id/lineChartView"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_below="@+id/barChart"
-                android:visibility="gone"/>
-
-            <com.kuo.mychart.view.ViewAnamatorTest
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_below="@+id/lineChart"  />
+                android:layout_height="250dp" />
 
         </RelativeLayout>
 

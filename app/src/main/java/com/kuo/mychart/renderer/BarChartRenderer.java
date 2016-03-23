@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -30,10 +29,10 @@ public class BarChartRenderer extends AbsChartRenderer {
     private Paint linePaint;
     private Paint textPaint;
 
-    public BarChartRenderer(Context context, int width, int height, ArrayList<BarData> barDatas) {
-        super(context, width, height);
+    public BarChartRenderer(Context context) {
+        super(context);
 
-        this.barDatas = barDatas;
+        //this.barDatas = barDatas;
 
         initPaint();
     }
@@ -66,6 +65,16 @@ public class BarChartRenderer extends AbsChartRenderer {
 
                 break;
         }
+
+    }
+
+    @Override
+    public void prepareCompute() {
+
+    }
+
+    @Override
+    public void computeGraph() {
 
     }
 
@@ -160,7 +169,7 @@ public class BarChartRenderer extends AbsChartRenderer {
 
     }
 
-    private void drawGraph(Canvas canvas) {
+    public void drawGraph(Canvas canvas) {
 
         int count = 0;
         int padding = 30;

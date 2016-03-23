@@ -36,7 +36,7 @@ public class PieChartView extends AbsChartView {
         super.onDraw(canvas);
 
         if(pieDatas != null) {
-            absChartRenderer = new PieChartRenderer(getContext(), getWidth(), getHeight(), pieDatas);
+            absChartRenderer = new PieChartRenderer(getContext());
             absChartRenderer.onDraw(canvas);
         }
 

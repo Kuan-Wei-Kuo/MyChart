@@ -10,15 +10,36 @@ public class ChartCompute {
     protected Viewport curViewport;
     protected Viewport minViewport;
 
-    protected int topPadding = 20;
+    protected float curMargin = 0f;
+
+    protected int padding = 20;
     protected int maxTextWidth;
     protected int maxTextHeight;
+
+    protected int chartWidth = 0;
+    protected int chartHeight = 0;
 
     protected float maxValue = 0f;
 
     public ChartCompute(Viewport minViewport) {
         this.minViewport = minViewport;
         curViewport = new Viewport(minViewport.left, minViewport.top, minViewport.right, minViewport.bottom);
+    }
+
+    public void setChartHeight(int chartHeight) {
+        this.chartHeight = chartHeight;
+    }
+
+    public void setChartWidth(int chartWidth) {
+        this.chartWidth = chartWidth;
+    }
+
+    public int getChartHeight() {
+        return chartHeight;
+    }
+
+    public int getChartWidth() {
+        return chartWidth;
     }
 
     public void setMaxTextWidth(int maxTextWidth) {
@@ -37,12 +58,12 @@ public class ChartCompute {
         return maxTextHeight;
     }
 
-    public void setTopPadding(int topPadding) {
-        this.topPadding = topPadding;
+    public void setPadding(int padding) {
+        this.padding = padding;
     }
 
-    public int getTopPadding() {
-        return topPadding;
+    public int getPadding() {
+        return padding;
     }
 
     public void setMaxValue(float maxValue) {
@@ -64,5 +85,13 @@ public class ChartCompute {
 
     public Viewport getMinViewport() {
         return minViewport;
+    }
+
+    public void setCurMargin(float curMargin) {
+        this.curMargin = curMargin;
+    }
+
+    public float getCurMargin() {
+        return curMargin;
     }
 }

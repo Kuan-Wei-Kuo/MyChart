@@ -35,14 +35,13 @@ public abstract class AbsChartView extends View implements ChartListener {
 
     public AbsChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        //setAbsChartRenderer();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        absChartRenderer.onDraw(canvas);
+        absChartRenderer.computeGraph();
+        absChartRenderer.drawGraph(canvas);
     }
 
     @Override
@@ -50,6 +49,7 @@ public abstract class AbsChartView extends View implements ChartListener {
         return chartTouchHandler.onTouchEvent(event, chartCompute);
     }
 
+    @Override
     public void setAbsChartRenderer(AbsChartRenderer absChartRenderer) {
         this.absChartRenderer = absChartRenderer;
     }
@@ -61,9 +61,19 @@ public abstract class AbsChartView extends View implements ChartListener {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
 
         chartTouchHandler = new ChartTouchHandler(getContext(), this);
-        chartCompute = new ChartCompute(new Viewport(0, 0, MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec)));
+
+        chartCompute = new ChartCompute(new Viewport(0, 0, w, h));
+        chartCompute.setChartWidth(w);
+        chartCompute.setChartHeight(h);
+
+        absChartRenderer.prepareCompute();
     }
 
     @Override

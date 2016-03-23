@@ -2,48 +2,40 @@ package com.kuo.mychart.renderer;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 
+import com.kuo.mychart.listener.ChartListener;
+import com.kuo.mychart.listener.LineChartListener;
 import com.kuo.mychart.model.LineData;
+import com.kuo.mychart.model.Viewport;
+import com.kuo.mychart.presenter.ChartCompute;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by Kuo on 2016/3/9.
  */
 public class LineChartRenderer extends AbsChartRenderer {
 
-    private static final float DEFAULT_SEPARATION = 0.25f;
+    private LineChartListener lineChartListener;
+    private ChartListener chartListener;
 
-    private ArrayList<LineData> lineDatas;
+    private ArrayList<RectF> rectFs = new ArrayList<>();
 
-    private int maxPoint = 0;
-    private int padding = 100;
+    private float columnWidth = 0f;
 
-    private float rangeX, rangeY;
-
-    private Paint linePaint;
-    private Paint textPaint;
-
-    private float horizontalStartX, horizontalStartY, horizontalEndX, horizontalEndY;
-    private float verticalStartX, verticalStartY, verticalEndX, verticalEndY;
-    private float positionX, positionY;
-
-    public LineChartRenderer(Context context, int width, int height, ArrayList<LineData> lineDatas) {
-        super(context, width, height);
-
-        this.lineDatas = lineDatas;
-
-        initPaint();
+    public LineChartRenderer(Context context, ChartListener chartListener, LineChartListener lineChartListener) {
+        super(context);
+        this.chartListener = chartListener;
+        this.lineChartListener = lineChartListener;
     }
 
     @Override
     public void onDraw(Canvas canvas) {
-        new DrawLineChartRenderer(canvas).run();
+
     }
 
     @Override
@@ -51,155 +43,221 @@ public class LineChartRenderer extends AbsChartRenderer {
 
     }
 
-    private void compareData() {
-
-        for(LineData lineData : lineDatas) {
-            if(maxPoint < lineData.getPoint()) {
-                maxPoint = lineData.getPoint();
-            }
-        }
-
-        Rect textBounds = new Rect();
-        textPaint.getTextBounds(String.valueOf(maxPoint), 0, String.valueOf(maxPoint).length(), textBounds);
-
-        padding = Math.abs(textBounds.right - textBounds.left);
-
-        verticalStartX = padding;
-        verticalStartY = padding;
-        verticalEndX = padding;
-        verticalEndY = getHeight() - padding;
-
-        horizontalStartX = verticalEndX;
-        horizontalStartY = verticalEndY;
-        horizontalEndX = getWidth() - padding;
-        horizontalEndY = verticalEndY;
-
-        rangeX = getWidth() - padding - padding;
-        rangeY = getHeight() - padding - padding;
-
-        positionX = verticalStartX;
-        positionY = verticalEndY;
+    @Override
+    public void prepareCompute() {
+        prepareChartCompute();
     }
 
-    private void initPaint() {
-
-        linePaint = new Paint();
-        linePaint.setStrokeWidth(5);
-        linePaint.setColor(getLineColor());
-
-        textPaint = new Paint();
-        textPaint.setTextSize(getTextSize());
-        textPaint.setColor(getTextColor());
+    @Override
+    public void computeGraph() {
+        prepareRects();
     }
 
-    private void drawXYLines(Canvas canvas) {
-        //draw vertical line;
-        canvas.drawLine(verticalStartX, verticalStartY, verticalEndX, verticalEndY, linePaint);
-        //draw horizontal line;
-        canvas.drawLine(horizontalStartX, horizontalStartY, horizontalEndX, horizontalEndY, linePaint);
+    @Override
+    public void drawGraph(Canvas canvas) {
+        drawSeparationLines(canvas);
+        drawRects(canvas);
+        drawXY(canvas);
+        drawAxisX(canvas);
+        drawAxisY(canvas);
+    }
+
+    private void drawXY(Canvas canvas) {
+
+        ChartCompute chartCompute = chartListener.getChartCompute();
+        Viewport minViewport = chartCompute.getMinViewport();
+
+        /*Draw Y Line*/
+        canvas.drawLine(minViewport.left,
+                minViewport.top,
+                minViewport.left,
+                minViewport.bottom, linePaint);
+
+        /*Draw X Line*/
+        canvas.drawLine(minViewport.left,
+                minViewport.bottom,
+                minViewport.right,
+                minViewport.bottom, linePaint);
     }
 
     private void drawSeparationLines(Canvas canvas) {
 
-        for(int i = 1 ; i <= 3 ; i++) {
-            float line = horizontalEndY - (rangeY * DEFAULT_SEPARATION * i);
-            canvas.drawLine(horizontalStartX, line, horizontalEndX, line, linePaint);
+        ChartCompute chartCompute = chartListener.getChartCompute();
+        Viewport minViewport = chartCompute.getMinViewport();
+
+        ArrayList<LineData> lineData = lineChartListener.getLineData();
+
+        int size = lineData.size() / 2;
+
+        float maxValue = chartCompute.getMaxValue();
+
+        for(int i = 1 ; i <= size ; i++) {
+            canvas.drawLine(minViewport.left,
+                    minViewport.bottom - minViewport.height() / maxValue * maxValue / size * i,
+                    minViewport.right,
+                    minViewport.bottom - minViewport.height() / maxValue * maxValue / size * i, linePaint);
         }
+
     }
 
     private void drawAxisY(Canvas canvas) {
-        for(int i = 0 ; i < (lineDatas.size() + 1) ; i++) {
-            float line = positionY - (rangeY * DEFAULT_SEPARATION * i);
-            String point = (int) (maxPoint * DEFAULT_SEPARATION * i) + "";
 
-            Rect textBounds = new Rect();
-            //get text bounds, that can get the text width and height
-            textPaint.getTextBounds(point, 0, point.length(), textBounds);
-            int textHeight = Math.abs(textBounds.bottom - textBounds.top);
-            int textWidth = Math.abs(textBounds.right - textBounds.left);
+        ChartCompute chartCompute = chartListener.getChartCompute();
+        Viewport minViewport = chartCompute.getMinViewport();
 
-            canvas.drawText(point, 0, line + textHeight / 2, textPaint);
+        ArrayList<LineData> lineData = lineChartListener.getLineData();
+
+        int size = lineData.size() / 2;
+
+        float maxValue = chartCompute.getMaxValue();
+
+        for(int i = 1 ; i <= size ; i++) {
+            canvas.drawText(String.valueOf(maxValue / size * i),
+                    0,
+                    minViewport.bottom - minViewport.height() / maxValue * maxValue / size * i + chartCompute.getMaxTextHeight() / 2, textPaint);
         }
+
     }
+
 
     private void drawAxisX(Canvas canvas) {
 
-        float specText = rangeX / lineDatas.size();
+        ChartCompute chartCompute = chartListener.getChartCompute();
+
+        Viewport minViewport = chartCompute.getMinViewport();
+
+        ArrayList<LineData> lineData = lineChartListener.getLineData();
 
         int count = 0;
 
-        for(LineData lineData : lineDatas) {
-            count++;
+        PointF pointF = new PointF(-chartCompute.getMaxTextWidth(), 0);
 
-            Rect textBounds = new Rect();
-            textPaint.getTextBounds(lineData.getAxisX(), 0, lineData.getAxisX().length(), textBounds);
-            int textHeight = textBounds.bottom - textBounds.top;
-            int textWidth = textBounds.right - textBounds.left;
+        for(RectF rectF : rectFs) {
 
-            canvas.drawText(lineData.getAxisX(), specText * count - textWidth / 2, positionY + textHeight, textPaint);
-        }
-    }
+            float x = rectF.centerX() - chartCompute.getMaxTextWidth() / 2;
+            float y = rectF.bottom + chartCompute.getMaxTextHeight();
 
-    private void drawGraph(Canvas canvas) {
+            if(x - pointF.x > chartCompute.getMaxTextWidth() &&
+                    x >= minViewport.left - chartCompute.getMaxTextWidth() / 2 &&
+                    rectF.width() >= columnWidth / 2) {
 
-        float specText = rangeX / lineDatas.size();
-        int count = 0;
+                canvas.drawText(lineData.get(count).getValueName(),
+                        x,
+                        y, textPaint);
 
-        PointF pointF = new PointF(0, 0);
-
-        for(LineData lineData : lineDatas) {
-            count++;
-
-            PointF centerPointF = new PointF((specText * count + pointF.x) / 2, ((positionY - rangeY / maxPoint * lineData.getPoint()) + pointF.y) / 2);
-
-            float nowX = specText * count;
-            float nowY = positionY - rangeY / maxPoint * lineData.getPoint();
-
-            Path path = new Path();
-            path.moveTo(pointF.x, pointF.y);
-
-            if(pointF.y != 0 && pointF.x != 0) {
-                if(nowY < pointF.y)
-                    path.cubicTo(centerPointF.x, pointF.y, nowX - nowX / 4, nowY, nowX, nowY);
-                else
-                    path.cubicTo(centerPointF.x, pointF.y, centerPointF.x, centerPointF.y, nowX, nowY);
-
-                linePaint.setStyle(Paint.Style.STROKE);
-                linePaint.setColor(lineData.getColor());
-                canvas.drawPath(path, linePaint);
+                pointF.x = x;
             }
 
-            pointF.set(specText * count, positionY - rangeY / maxPoint * lineData.getPoint());
+            count++;
         }
+    }
 
-        count = 0;
+    private void drawRects(Canvas canvas) {
+
+        Viewport minViewport = chartListener.getChartCompute().getMinViewport();
+
+        ArrayList<LineData> lineData = lineChartListener.getLineData();
+
+        int count = 0;
+
+        rectPaint.setStrokeWidth(30);
+
+        for(RectF rectF : rectFs) {
+            if(rectF.centerX() > minViewport.left) {
+                rectPaint.setColor(lineData.get(count).getValueColor());
+                canvas.drawPoint(rectF.centerX(), rectF.top, rectPaint);
+            }
+            count++;
+        }
+    }
+
+    /**
+     * Compute ChartCompute
+     *
+     * Calling prepareChartCompute on onSizeChanged.*/
+    private void prepareChartCompute() {
+
+        ChartCompute chartCompute = chartListener.getChartCompute();
+        ArrayList<LineData> lineDatas = lineChartListener.getLineData();
+
+        int maxTextWidth = 0;
+
+        int maxTextHeight = 0;
+
+        float maxValue = 0;
 
         for(LineData lineData : lineDatas) {
+
+            Rect rectText = new Rect();
+            textPaint.getTextBounds(lineData.getValueName(), 0, lineData.getValueName().length(), rectText);
+
+            if(maxTextWidth < rectText.width()) {
+                maxTextWidth = rectText.width();
+            }
+
+            if(maxTextHeight < rectText.height()) {
+                maxTextHeight = rectText.height();
+            }
+
+            if(maxValue < lineData.getValue()) {
+                maxValue = lineData.getValue();
+            }
+        }
+
+        chartCompute.setMaxValue(maxValue);
+        chartCompute.setMaxTextWidth(maxTextWidth);
+        chartCompute.setMaxTextHeight(maxTextHeight);
+
+        chartCompute.setMinViewport(new Viewport(
+                maxTextWidth,
+                maxTextHeight,
+                chartCompute.getChartWidth() - maxTextHeight,
+                chartCompute.getChartHeight() - maxTextHeight));
+
+    }
+
+    /**
+     * Compute New CurrentRect
+     *
+     * We need to calling prepareRect in every time.*/
+    private void prepareRects() {
+
+        rectFs.clear();
+
+        ChartCompute chartCompute = chartListener.getChartCompute();
+        Viewport minViewport = chartCompute.getMinViewport();
+        Viewport curViewport = chartCompute.getCurViewport();
+        ArrayList<LineData> lineDatas = lineChartListener.getLineData();
+
+        int count = 0;
+
+        float columnMargin = curViewport.width() / lineDatas.size() * 0.3f;
+
+        columnWidth = curViewport.width() / lineDatas.size() * 0.7f;
+
+
+        for(LineData lineData : lineDatas) {
+
+            float left = curViewport.left + count * (columnWidth + columnMargin) + chartCompute.getPadding();
+            float top = minViewport.bottom - minViewport.height() / chartCompute.getMaxValue() * lineData.getValue();
+            float right = left + columnWidth - chartCompute.getPadding();
+            float bottom = minViewport.bottom;
+
+            if(left < minViewport.left) {
+                left = minViewport.left;
+            }else if(right > minViewport.right) {
+                right = minViewport.right;
+            }
+
+            rectFs.add(new Viewport(left, top, right, bottom));
+
+            Rect rectText = new Rect();
+            rectPaint.getTextBounds(lineData.getValueName(), 0, lineData.getValueName().length(), rectText);
+
             count++;
-            textPaint.setColor(lineData.getColor());
-            textPaint.setStrokeWidth(36);
-            canvas.drawPoint(specText * count, positionY - rangeY / maxPoint * lineData.getPoint(), textPaint);
         }
+
+        chartCompute.setCurMargin(columnMargin);
     }
 
-    public class DrawLineChartRenderer implements Runnable {
-
-        private Canvas canvas;
-
-        public DrawLineChartRenderer(Canvas canvas) {
-            this.canvas = canvas;
-        }
-
-        @Override
-        public void run() {
-
-            compareData();
-
-            drawXYLines(canvas);
-            drawSeparationLines(canvas);
-            drawAxisY(canvas);
-            drawAxisX(canvas);
-            drawGraph(canvas);
-        }
-    }
 }

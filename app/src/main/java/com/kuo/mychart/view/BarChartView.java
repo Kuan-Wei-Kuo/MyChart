@@ -50,7 +50,7 @@ public class BarChartView extends AbsChartView {
 
     public void setBarDatas(ArrayList<BarData> barDatas) {
         this.barDatas = barDatas;
-        absChartRenderer = new BarChartRenderer(getContext(), getWidth(), getHeight(), barDatas);
+        absChartRenderer = new BarChartRenderer(getContext());
         invalidate();
     }
 }

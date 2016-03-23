@@ -14,7 +14,7 @@ public abstract class AbsChartRenderer {
 
     protected int width, height, textSize, textColor, lineColor;
     protected Context context;
-    protected Paint rectPaint, linePaint;
+    protected Paint rectPaint, linePaint, textPaint;
 
     public AbsChartRenderer() {}
 
@@ -24,15 +24,22 @@ public abstract class AbsChartRenderer {
         textSize = ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 15);
         textColor = ChartRendererUntil.CHART_GREEN;
         lineColor = ChartRendererUntil.CHART_GREY;
-    }
-    public AbsChartRenderer(Context context, int width, int height) {
-        this.context = context;
-        this.width = width;
-        this.height = height;
 
-        textSize = ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 15);
-        textColor = ChartRendererUntil.CHART_GREEN;
-        lineColor = ChartRendererUntil.CHART_GREY;
+        init();
+    }
+
+    private void init() {
+        rectPaint = new Paint();
+        rectPaint.setColor(ChartRendererUntil.CHART_GREEN);
+
+        linePaint = new Paint();
+        linePaint.setColor(ChartRendererUntil.CHART_GREY);
+        linePaint.setStrokeWidth(ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 2));
+
+        textPaint = new Paint();
+        textPaint.setColor(ChartRendererUntil.CHART_GREY);
+        textPaint.setTextSize(ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 15));
+
     }
 
     public abstract void onDraw(Canvas canvas);
@@ -74,7 +81,7 @@ public abstract class AbsChartRenderer {
         return lineColor;
     }
 
-    public Paint getRectPaint() {
-        return rectPaint;
-    }
+    public abstract void prepareCompute();
+    public abstract void computeGraph();
+    public abstract void drawGraph(Canvas canvas);
 }
