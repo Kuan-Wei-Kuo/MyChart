@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.MotionEvent;
 
 import com.kuo.mychart.listener.ChartListener;
 import com.kuo.mychart.listener.LineChartListener;
@@ -34,16 +33,6 @@ public class LineChartRenderer extends AbsChartRenderer {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
-
-    }
-
-    @Override
-    public void touch(MotionEvent event, int state) {
-
-    }
-
-    @Override
     public void prepareCompute() {
         prepareChartCompute();
     }
@@ -56,6 +45,7 @@ public class LineChartRenderer extends AbsChartRenderer {
     @Override
     public void drawGraph(Canvas canvas) {
         drawSeparationLines(canvas);
+        drawLines(canvas);
         drawRects(canvas);
         drawXY(canvas);
         drawAxisX(canvas);
@@ -164,10 +154,37 @@ public class LineChartRenderer extends AbsChartRenderer {
 
         for(RectF rectF : rectFs) {
             if(rectF.centerX() > minViewport.left) {
+
                 rectPaint.setColor(lineData.get(count).getValueColor());
+
                 canvas.drawPoint(rectF.centerX(), rectF.top, rectPaint);
+
             }
             count++;
+        }
+    }
+
+    private void drawLines(Canvas canvas) {
+        Viewport minViewport = chartListener.getChartCompute().getMinViewport();
+
+        ArrayList<LineData> lineData = lineChartListener.getLineData();
+
+        int count = 0;
+
+        PointF pointF = new PointF(0, 0);
+
+        rectPaint.setStrokeWidth(30);
+
+        for(RectF rectF : rectFs) {
+            if(rectF.centerX() > minViewport.left) {
+
+                if(pointF.x != 0 && pointF.y != 0) {
+                    canvas.drawLine(pointF.x, pointF.y, rectF.centerX(), rectF.top, linePaint);
+                }
+
+                pointF.x = rectF.centerX();
+                pointF.y = rectF.top;
+            }
         }
     }
 

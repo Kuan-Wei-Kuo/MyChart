@@ -8,15 +8,17 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.content.ContextCompat;
-import android.view.MotionEvent;
 
-import com.kuo.mychart.model.PieData;
 import com.kuo.mychart.R;
+import com.kuo.mychart.listener.ChartListener;
+import com.kuo.mychart.listener.PieDataListener;
+import com.kuo.mychart.model.PieData;
+import com.kuo.mychart.presenter.ChartCompute;
 import com.kuo.mychart.until.ChartRendererUntil;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by Kuo on 2016/3/7.
  */
 public class PieChartRenderer extends AbsChartRenderer {
@@ -25,26 +27,19 @@ public class PieChartRenderer extends AbsChartRenderer {
     private Paint linePaint;
     private RectF rectF;
     private PointF pointF = new PointF();
-    private ArrayList<PieData> pieDatas;
 
     private float radius;
 
-    public PieChartRenderer(Context context) {
+    private  ChartListener chartListener;
+    private  PieDataListener pieDataListener;
+
+    public PieChartRenderer(Context context, ChartListener chartListener, PieDataListener pieDataListener) {
         super(context);
 
-        this.pieDatas = pieDatas;
+        this.chartListener = chartListener;
+        this.pieDataListener = pieDataListener;
 
         initPaint();
-    }
-
-    @Override
-    public void onDraw(Canvas canvas) {
-        new DrawPieRendererRunnable(canvas).run();
-    }
-
-    @Override
-    public void touch(MotionEvent event, int state) {
-
     }
 
     @Override
@@ -54,12 +49,23 @@ public class PieChartRenderer extends AbsChartRenderer {
 
     @Override
     public void computeGraph() {
+        comparePieData();
+    }
 
+    @Override
+    public void drawGraph(Canvas canvas) {
+
+        drawCircleGraph(canvas);
+        drawSeparationLines(canvas);
+        drawLables(canvas);
+        drawCenterCircle(canvas);
     }
 
     private void comparePieData() {
 
         int totalPoint = 0;
+
+        ArrayList<PieData> pieDatas = pieDataListener.getPieData();
 
         for(PieData pieData : pieDatas) {
             totalPoint += pieData.getPoint();
@@ -82,23 +88,27 @@ public class PieChartRenderer extends AbsChartRenderer {
         linePaint.setAntiAlias(true);
     }
 
-    public void drawGraph(Canvas canvas) {
+    public void drawCircleGraph(Canvas canvas) {
 
-        int pieSpec = getWidth() >= getHeight() ? getHeight() / 2 : getWidth() / 2;
+        ChartCompute chartCompute = chartListener.getChartCompute();
 
-        int width = getWidth();
-        int height = getHeight();
+        int pieSpec = chartCompute.getChartWidth() >= chartCompute.getChartHeight() ? chartCompute.getChartHeight() / 2 : chartCompute.getChartWidth() / 2;
+
+        int width = chartCompute.getChartWidth();
+        int height = chartCompute.getChartHeight();
 
         float left = (width - pieSpec) / 2;
         float top = (height - pieSpec) / 2;
-        float right = getWidth() - left;
-        float bottom = getHeight() - top;
+        float right = width - left;
+        float bottom = height - top;
 
         rectF = new RectF(left, top, right, bottom);
 
         radius = pieSpec / 2;
 
         int angles = 0;
+
+        ArrayList<PieData> pieDatas = pieDataListener.getPieData();
 
         for(PieData pieData : pieDatas) {
             bgPaint.setColor(pieData.getColor());
@@ -112,6 +122,8 @@ public class PieChartRenderer extends AbsChartRenderer {
     private void drawSeparationLines(Canvas canvas) {
 
         int angles = 0;
+
+        ArrayList<PieData> pieDatas = pieDataListener.getPieData();
 
         for(PieData pieData : pieDatas) {
 
@@ -138,6 +150,8 @@ public class PieChartRenderer extends AbsChartRenderer {
 
         int angles = 0;
         int centerAngle = 0;
+
+        ArrayList<PieData> pieDatas = pieDataListener.getPieData();
 
         for(int i = 0 ; i < pieDatas.size() ; i++) {
 
@@ -190,25 +204,4 @@ public class PieChartRenderer extends AbsChartRenderer {
         point.set(point.x / abs, point.y / abs);
     }
 
-
-    public class DrawPieRendererRunnable implements Runnable {
-
-        private Canvas canvas;
-
-        public DrawPieRendererRunnable(Canvas canvas) {
-            this.canvas = canvas;
-        }
-
-        @Override
-        public void run() {
-
-            comparePieData();
-
-            drawGraph(canvas);
-            drawSeparationLines(canvas);
-            drawLables(canvas);
-            drawCenterCircle(canvas);
-        }
-
-    }
 }

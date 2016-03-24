@@ -3,7 +3,6 @@ package com.kuo.mychart.renderer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.view.MotionEvent;
 
 import com.kuo.mychart.until.ChartRendererUntil;
 
@@ -41,9 +40,6 @@ public abstract class AbsChartRenderer {
         textPaint.setTextSize(ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 15));
 
     }
-
-    public abstract void onDraw(Canvas canvas);
-    public abstract void touch(MotionEvent event, int state);
 
     public int getWidth() {
         return width;

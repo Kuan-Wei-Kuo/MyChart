@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.MotionEvent;
 
 import com.kuo.mychart.listener.ChartListener;
 import com.kuo.mychart.listener.ColumnChartListener;
@@ -31,16 +30,6 @@ public class ColumnChartRenderer extends AbsChartRenderer {
         super(context);
         this.chartListener = chartListener;
         this.columnChartListener = columnChartListener;
-    }
-
-    @Override
-    public void onDraw(Canvas canvas) {
-
-    }
-
-    @Override
-    public void touch(MotionEvent event, int state) {
-
     }
 
     @Override

@@ -14,8 +14,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.kuo.mychart.view.LineChartView
-                android:id="@+id/lineChartView"
+            <com.kuo.mychart.view.PieChartView
+                android:id="@+id/pieChartView"
                 android:layout_width="match_parent"
                 android:layout_height="250dp" />
 
