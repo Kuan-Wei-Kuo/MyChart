@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class LineChartView extends AbsChartView implements LineChartListener {
 
-    private ArrayList<LineData> lineData;
+    private ArrayList<LineData> lineData = new ArrayList<>();
 
     public LineChartView(Context context) {
         this(context, null, 0);

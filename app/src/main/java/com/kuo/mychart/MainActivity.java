@@ -1,17 +1,11 @@
 package com.kuo.mychart;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-
-import com.kuo.mychartlib.model.ColumnData;
-import com.kuo.mychartlib.model.LineData;
-import com.kuo.mychartlib.model.PieData;
-import com.kuo.mychartlib.until.ChartRendererUntil;
-import com.kuo.mychartlib.view.ColumnChartView;
-import com.kuo.mychartlib.view.LineChartView;
-import com.kuo.mychartlib.view.PieChartView;
-
-import java.util.ArrayList;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,33 +14,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayList<PieData> pieDatas = new ArrayList<>();
-        ArrayList<LineData> lineDatas = new ArrayList<>();
-        ArrayList<ColumnData> columnDatas = new ArrayList<>();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        String[] axisXs = {"01/01", "01/02", "01/03", "01/04", "01/05", "01/06", "01/07", "01/08"};
-        int[] values = {80, 40, 50, 20, 150, 200, 100, 25};
-        int[] colors = {ChartRendererUntil.CHART_GREEN, ChartRendererUntil.CHART_PINK, ChartRendererUntil.CHART_RED, ChartRendererUntil.CHART_YELLOW, ChartRendererUntil.CHART_BROWN, ChartRendererUntil.CHART_ORANGE, ChartRendererUntil.CHART_GREY, ChartRendererUntil.CHART_PURPLE};
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-        for(int i = 0 ; i < values.length ; i++) {
-            PieData pieData = new PieData(values[i], colors[i], axisXs[i], 0);
-            pieDatas.add(pieData);
+        ChartListFragment chartListFragment = new ChartListFragment();
+        fragmentTransaction.replace(R.id.frame_layout, chartListFragment, "chartListFragment");
+        fragmentTransaction.commit();
 
-            LineData lineData = new LineData(axisXs[i], values[i], colors[i]);
-            lineDatas.add(lineData);
+    }
 
-            ColumnData columnData = new ColumnData(axisXs[i], values[i], colors[i]);
-            columnDatas.add(columnData);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        int stackCount = getSupportFragmentManager().getBackStackEntryCount();
+
+        if(id == android.R.id.home && stackCount > 0) {
+            getSupportFragmentManager().popBackStack();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setSubtitle("");
         }
 
-        PieChartView pieChartView = (PieChartView) findViewById(R.id.pieChartView);
-        pieChartView.setPieData(pieDatas);
+        return super.onOptionsItemSelected(item);
+    }
 
-        LineChartView lineChartView = (LineChartView) findViewById(R.id.lineChartView);
-        lineChartView.setLineData(lineDatas);
-
-        ColumnChartView columnChartView = (ColumnChartView) findViewById(R.id.columnChartView);
-        columnChartView.setColumnData(columnDatas);
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setSubtitle("");
     }
 }

@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class ColumnChartView extends AbsChartView implements ColumnChartListener{
 
-    protected ArrayList<ColumnData> columnData;
+    protected ArrayList<ColumnData> columnData = new ArrayList<>();
 
     public ColumnChartView(Context context) {
         this(context, null, 0);
@@ -44,4 +44,5 @@ public class ColumnChartView extends AbsChartView implements ColumnChartListener
     public void setAbsChartRenderer(AbsChartRenderer absChartRenderer) {
         super.setAbsChartRenderer(absChartRenderer);
     }
+
 }

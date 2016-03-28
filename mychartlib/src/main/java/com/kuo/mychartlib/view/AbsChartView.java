@@ -85,4 +85,9 @@ public abstract class AbsChartView extends View implements ChartListener {
     public void setChartCompute(ChartCompute chartCompute) {
         this.chartCompute = chartCompute;
     }
+
+    public void upadteChart() {
+        absChartRenderer.prepareCompute();
+        invalidate();
+    }
 }

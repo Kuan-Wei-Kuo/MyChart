@@ -10,13 +10,13 @@ import com.kuo.mychartlib.renderer.PieChartRenderer;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by Kuo on 2016/3/7.
  */
 public class PieChartView extends AbsChartView implements PieDataListener {
 
     private AbsChartRenderer absChartRenderer;
-    private ArrayList<PieData> pieDatas;
+    private ArrayList<PieData> pieDatas = new ArrayList<>();
 
     public PieChartView(Context context) {
         this(context, null, 0);
