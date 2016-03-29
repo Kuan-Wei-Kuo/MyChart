@@ -141,7 +141,7 @@ public class ColumnChartRenderer extends AbsChartRenderer {
                         axisData.x,
                         axisData.y, textPaint);
             }
-            
+
         }
     }
 
