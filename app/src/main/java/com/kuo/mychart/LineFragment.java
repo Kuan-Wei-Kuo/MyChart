@@ -54,7 +54,7 @@ public class LineFragment extends Fragment {
         size_seek = (SeekBar) rootView.findViewById(R.id.size_seek);
         value_seek = (SeekBar) rootView.findViewById(R.id.value_seek);
 
-        size_seek.setMax(100);
+        size_seek.setMax(1000);
         value_seek.setMax(1000);
 
         size_seek.setOnSeekBarChangeListener(seekBarChangeListener);

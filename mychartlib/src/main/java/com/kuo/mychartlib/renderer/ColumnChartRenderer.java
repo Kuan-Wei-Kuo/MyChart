@@ -8,6 +8,7 @@ import android.graphics.RectF;
 
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.listener.ColumnChartListener;
+import com.kuo.mychartlib.model.AxisData;
 import com.kuo.mychartlib.model.ColumnData;
 import com.kuo.mychartlib.model.Viewport;
 import com.kuo.mychartlib.presenter.ChartCompute;
@@ -23,8 +24,14 @@ public class ColumnChartRenderer extends AbsChartRenderer {
     private ChartListener chartListener;
 
     private ArrayList<RectF> rectFs = new ArrayList<>();
+    private ArrayList<PointF> textPoints = new ArrayList<>();
+    private ArrayList<Integer> textCount = new ArrayList<>();
+
+    private ArrayList<AxisData> axisDatas = new ArrayList<>();
 
     private float columnWidth = 0f;
+
+    private PointF pointF;
 
     public ColumnChartRenderer(Context context, ChartListener chartListener, ColumnChartListener columnChartListener) {
         super(context);
@@ -76,7 +83,9 @@ public class ColumnChartRenderer extends AbsChartRenderer {
 
         ArrayList<ColumnData> columnDatas = columnChartListener.getColumnData();
 
-        int size = columnDatas.size() / 2;
+        //int size = columnDatas.size() / 2;
+
+        int size = 5;
 
         float maxValue = chartCompute.getMaxValue();
 
@@ -96,12 +105,15 @@ public class ColumnChartRenderer extends AbsChartRenderer {
 
         ArrayList<ColumnData> columnDatas = columnChartListener.getColumnData();
 
-        int size = columnDatas.size() / 2;
+        //int size = columnDatas.size() / 2;
+        int size = 5;
 
         float maxValue = chartCompute.getMaxValue();
 
+        String floatFormat = "%.1f";
+
         for(int i = 1 ; i <= size ; i++) {
-            canvas.drawText(String.valueOf(maxValue / size * i),
+            canvas.drawText(String.format(floatFormat, maxValue / size * i),
                     0,
                     minViewport.bottom - minViewport.height() / maxValue * maxValue / size * i + chartCompute.getMaxTextHeight() / 2, textPaint);
         }
@@ -115,29 +127,21 @@ public class ColumnChartRenderer extends AbsChartRenderer {
 
         Viewport minViewport = chartCompute.getMinViewport();
 
-        ArrayList<ColumnData> columnDatas = columnChartListener.getColumnData();
+        for(AxisData axisData : axisDatas) {
 
-        int count = 0;
+            Rect rectText = new Rect();
+            textPaint.getTextBounds(axisData.getAxis(), 0, axisData.getAxis().length(), rectText);
 
-        PointF pointF = new PointF(-chartCompute.getMaxTextWidth(), 0);
+            int textWidth = rectText.width();
 
-        for(RectF rectF : rectFs) {
+            if(axisData.x + textWidth / 2 > minViewport.left &&
+                    axisData.x + textWidth / 2 < minViewport.right && axisData.isEnable())  {
 
-            float x = rectF.centerX() - chartCompute.getMaxTextWidth() / 2;
-            float y = rectF.bottom + chartCompute.getMaxTextHeight();
-
-            if(x - pointF.x > chartCompute.getMaxTextWidth() &&
-                    x >= minViewport.left - chartCompute.getMaxTextWidth() / 2 &&
-                    rectF.width() >= columnWidth / 2) {
-
-                canvas.drawText(columnDatas.get(count).getValueName(),
-                        x,
-                        y, textPaint);
-
-                pointF.x = x;
+                canvas.drawText(axisData.getAxis(),
+                        axisData.x,
+                        axisData.y, textPaint);
             }
-
-            count++;
+            
         }
     }
 
@@ -187,12 +191,19 @@ public class ColumnChartRenderer extends AbsChartRenderer {
             }
         }
 
+        pointF = new PointF(chartCompute.getPadding() - chartCompute.getMaxTextWidth(), 0);
+
         chartCompute.setMaxValue(maxValue);
         chartCompute.setMaxTextWidth(maxTextWidth);
         chartCompute.setMaxTextHeight(maxTextHeight);
 
+        String floatFormat = "%.1f";
+
+        Rect rectText = new Rect();
+        textPaint.getTextBounds(String.format(floatFormat, maxValue), 0, String.format(floatFormat, maxValue).length(), rectText);
+
         chartCompute.setMinViewport(new Viewport(
-                maxTextWidth,
+                rectText.width() + chartCompute.getPadding(),
                 maxTextHeight,
                 chartCompute.getChartWidth() - maxTextHeight,
                 chartCompute.getChartHeight() - maxTextHeight));
@@ -206,6 +217,7 @@ public class ColumnChartRenderer extends AbsChartRenderer {
     private void prepareRects() {
 
         rectFs.clear();
+        axisDatas.clear();
 
         ChartCompute chartCompute = chartListener.getChartCompute();
         Viewport minViewport = chartCompute.getMinViewport();
@@ -214,16 +226,15 @@ public class ColumnChartRenderer extends AbsChartRenderer {
 
         int count = 0;
 
-        float columnMargin = curViewport.width() / columnDatas.size() * 0.3f;
+        float columnMargin = curViewport.width() / columnDatas.size() * 0.25f;
 
-        columnWidth = curViewport.width() / columnDatas.size() * 0.7f;
-
+        columnWidth = curViewport.width() / columnDatas.size() * 0.75f;
 
         for(ColumnData columnData : columnDatas) {
 
             float left = curViewport.left + count * (columnWidth + columnMargin) + chartCompute.getPadding();
             float top = minViewport.bottom - minViewport.height() / chartCompute.getMaxValue() * columnData.getValue();
-            float right = left + columnWidth - chartCompute.getPadding();
+            float right = left + columnWidth;
             float bottom = minViewport.bottom;
 
             if(left < minViewport.left) {
@@ -235,7 +246,23 @@ public class ColumnChartRenderer extends AbsChartRenderer {
             rectFs.add(new Viewport(left, top, right, bottom));
 
             Rect rectText = new Rect();
-            rectPaint.getTextBounds(columnData.getValueName(), 0, columnData.getValueName().length(), rectText);
+            textPaint.getTextBounds(columnDatas.get(count).getValueName(), 0, columnDatas.get(count).getValueName().length(), rectText);
+
+            int textWidth = rectText.width();
+
+            float x = right == minViewport.right ? left + columnWidth / 2 - textWidth / 2 : right - columnWidth + columnWidth / 2 - textWidth / 2;
+            float y = bottom + chartCompute.getMaxTextHeight();
+
+            AxisData axisData = new AxisData(x, y);
+            axisData.setAxis(columnData.getValueName());
+
+            if(Math.abs(x - pointF.x) > chartCompute.getMaxTextWidth() ||
+                    right - left > chartCompute.getMaxTextWidth()) {
+                pointF.x = x;
+                axisData.setIsEnable(true);
+            }
+
+            axisDatas.add(axisData);
 
             count++;
         }

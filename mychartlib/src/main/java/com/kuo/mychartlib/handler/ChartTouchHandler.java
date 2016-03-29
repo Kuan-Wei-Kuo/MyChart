@@ -3,7 +3,6 @@ package com.kuo.mychartlib.handler;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.VelocityTracker;
@@ -86,6 +85,7 @@ public class ChartTouchHandler {
 
         if(event.getPointerCount() > 1) {
             state = ZOOM;
+            chartCompute.setTouchState(ZOOM);
             return scaleGestureDetector.onTouchEvent(event);
         } else {
 
@@ -100,6 +100,9 @@ public class ChartTouchHandler {
                 case MotionEvent.ACTION_MOVE:
 
                     if(state == SCROLL) {
+
+                        chartCompute.setTouchState(SCROLL);
+
                         float left = event.getX() + offestX;
                         float right = left + chartCompute.getCurViewport().width();
 
@@ -175,10 +178,10 @@ public class ChartTouchHandler {
                 }
             }
 
-            Log.d("chartCompute left", chartCompute.getMinViewport().left + "");
+            //Log.d("chartCompute left", chartCompute.getMinViewport().left + "");
 
-            Log.d("left", left + "");
-            Log.d("right", right + "");
+            //Log.d("left", left + "");
+            //Log.d("right", right + "");
 
             chartCompute.getCurViewport().left = Math.min(chartCompute.getMinViewport().left, left);
             chartCompute.getCurViewport().right = Math.max(chartCompute.getMinViewport().right, right);

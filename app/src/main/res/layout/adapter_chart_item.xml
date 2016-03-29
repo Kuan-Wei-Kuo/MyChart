@@ -8,12 +8,12 @@
         android:id="@+id/chart_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="21sp"/>
+        android:textSize="17sp"/>
 
     <TextView
         android:id="@+id/chart_interview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"/>
+        android:textSize="14sp"/>
 
 </LinearLayout>

@@ -10,6 +10,8 @@ public class ChartCompute {
     protected Viewport curViewport;
     protected Viewport minViewport;
 
+    protected int touchState;
+
     protected float curMargin = 0f;
 
     protected int padding = 20;
@@ -93,5 +95,13 @@ public class ChartCompute {
 
     public float getCurMargin() {
         return curMargin;
+    }
+
+    public void setTouchState(int touchState) {
+        this.touchState = touchState;
+    }
+
+    public int getTouchState() {
+        return touchState;
     }
 }
