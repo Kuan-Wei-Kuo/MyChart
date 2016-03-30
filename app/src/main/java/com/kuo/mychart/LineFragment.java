@@ -90,7 +90,7 @@ public class LineFragment extends Fragment {
                 maxValue = progress <= 0 ? 100 : progress;
             }
 
-            lineChartView.setLineData(computeLineData(size, maxValue));
+            lineChartView.setChartData(computeLineData(size, maxValue));
             lineChartView.upadteChart();
         }
 

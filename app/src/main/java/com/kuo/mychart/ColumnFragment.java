@@ -15,7 +15,7 @@ import com.kuo.mychartlib.view.ColumnChartView;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
+/*
  * Created by Kuo on 2016/3/28.
  */
 public class ColumnFragment extends Fragment {
@@ -64,18 +64,17 @@ public class ColumnFragment extends Fragment {
 
     private ArrayList<ColumnData> computeColumnData(int size, int maxValue) {
 
-        ArrayList<ColumnData> columnDatas = new ArrayList<>();
-
         int[] colors = {ChartRendererUntil.CHART_GREEN, ChartRendererUntil.CHART_PINK, ChartRendererUntil.CHART_RED, ChartRendererUntil.CHART_YELLOW, ChartRendererUntil.CHART_BROWN, ChartRendererUntil.CHART_ORANGE, ChartRendererUntil.CHART_GREY, ChartRendererUntil.CHART_PURPLE};
+
+        ArrayList<ColumnData> test = new ArrayList<>();
 
         Random random = new Random();
 
         for(int i = 0 ; i < size ; i++) {
-            ColumnData columnData = new ColumnData("Axis-" + i, random.nextInt(maxValue), colors[random.nextInt(colors.length)]);
-            columnDatas.add(columnData);
+           test.add(new ColumnData("Axis X", random.nextInt(maxValue), colors[random.nextInt(colors.length)]));
         }
 
-        return columnDatas;
+        return test;
     }
 
     private SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -90,7 +89,7 @@ public class ColumnFragment extends Fragment {
                 maxValue = progress <= 0 ? 100 : progress;
             }
 
-            columnChartView.setColumnData(computeColumnData(size, maxValue));
+            columnChartView.setChartData(computeColumnData(size, maxValue));
             columnChartView.upadteChart();
         }
 
