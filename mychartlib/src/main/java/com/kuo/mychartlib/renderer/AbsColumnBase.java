@@ -256,5 +256,9 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
         return columnDatas.get(index).getValueColor();
     }
 
+    public float getColumnWidth() {
+        return columnWidth;
+    }
+
     public abstract void drawRects(Canvas canvas);
 }
