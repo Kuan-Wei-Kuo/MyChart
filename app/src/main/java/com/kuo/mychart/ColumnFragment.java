@@ -89,7 +89,7 @@ public class ColumnFragment extends Fragment {
                 maxValue = progress <= 0 ? 100 : progress;
             }
 
-            columnChartView.setChartData(computeColumnData(size, maxValue));
+            columnChartView.setColumnData(computeColumnData(size, maxValue));
             columnChartView.upadteChart();
         }
 

@@ -24,6 +24,8 @@ public class LineChartRenderer extends AbsColumnBase {
     @Override
     public void drawRects(Canvas canvas) {
 
+        drawLines(canvas);
+
         Viewport minViewport = chartListener.getChartCompute().getMinViewport();
 
         ArrayList<RectF> rectFs = getRectFs();
@@ -52,8 +54,6 @@ public class LineChartRenderer extends AbsColumnBase {
             }
             count++;
         }
-
-        drawLines(canvas);
     }
 
 
@@ -64,7 +64,7 @@ public class LineChartRenderer extends AbsColumnBase {
         ArrayList<RectF> rectFs = getRectFs();
 
         RectF oldRectF = null;
-        
+
         for(RectF rectF : rectFs) {
 
             if(oldRectF != null && getRawRectF(rectF).centerX() > minViewport.left) {

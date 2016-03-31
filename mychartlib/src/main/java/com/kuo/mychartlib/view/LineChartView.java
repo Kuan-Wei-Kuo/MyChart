@@ -43,8 +43,7 @@ public class LineChartView extends AbsChartView implements ChartGenericListener 
         return lineData.getChartData();
     }
 
-    @Override
-    public void setChartData(ArrayList<? extends ChartData> chartData) {
-        lineData.setChartData((ArrayList<LineData>) chartData);
+    public void setLineData(ArrayList<LineData> lineData) {
+        this.lineData.setChartData(lineData);
     }
 }

@@ -9,8 +9,5 @@ import java.util.ArrayList;
  */
 public interface ChartGenericListener {
 
-    public ArrayList<? extends ChartData> getChartData();
-
-    public void setChartData(ArrayList<? extends ChartData> chartData);
-
+    ArrayList<? extends ChartData> getChartData();
 }
