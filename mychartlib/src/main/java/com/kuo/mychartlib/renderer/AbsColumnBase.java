@@ -209,9 +209,9 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
         for(ChartData chartData : chartDatas) {
 
             float left = curViewport.left + count * (columnWidth + columnMargin) + chartCompute.getPadding();
-            float top = minViewport.bottom - minViewport.height() / chartCompute.getMaxValue() * chartData.getValue();
+            float top = curViewport.bottom - curViewport.height() / chartCompute.getMaxValue() * chartData.getValue();
             float right = left + columnWidth;
-            float bottom = minViewport.bottom;
+            float bottom = curViewport.bottom;
 
             if(left < minViewport.left) {
                 left = minViewport.left;

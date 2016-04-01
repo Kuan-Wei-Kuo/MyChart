@@ -104,4 +104,33 @@ public class ChartCompute {
     public int getTouchState() {
         return touchState;
     }
+
+    public void setCurViewport(float left, float top, float right, float bottom) {
+
+        if(left > minViewport.left) {
+            left = minViewport.left;
+            right = curViewport.right;
+        }
+
+        if(right < minViewport.right) {
+            left = curViewport.left;
+            right = minViewport.right;
+        }
+
+        if(top > minViewport.top) {
+            top = minViewport.top;
+            bottom = curViewport.bottom;
+        }
+
+        if(bottom < minViewport.bottom) {
+            top = curViewport.top;
+            bottom = minViewport.bottom;
+        }
+
+        curViewport.left = left;
+        curViewport.right = right;
+        curViewport.top = top;
+        curViewport.bottom = bottom;
+
+    }
 }

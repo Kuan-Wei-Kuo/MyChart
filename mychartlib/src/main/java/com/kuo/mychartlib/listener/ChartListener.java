@@ -1,16 +1,16 @@
 package com.kuo.mychartlib.listener;
 
-import com.kuo.mychartlib.renderer.AbsChartRenderer;
 import com.kuo.mychartlib.presenter.ChartCompute;
+import com.kuo.mychartlib.renderer.AbsChartRenderer;
 
 /*
  * Created by Kuo on 2016/3/22.
  */
 public interface ChartListener {
 
-    public ChartCompute getChartCompute();
+    ChartCompute getChartCompute();
 
-    public void setChartCompute(ChartCompute chartCompute);
+    void setChartCompute(ChartCompute chartCompute);
 
-    public void setAbsChartRenderer(AbsChartRenderer absChartRenderer);
+    void setAbsChartRenderer(AbsChartRenderer absChartRenderer);
 }
