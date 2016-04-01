@@ -71,7 +71,7 @@ public class ColumnFragment extends Fragment {
         Random random = new Random();
 
         for(int i = 0 ; i < size ; i++) {
-           test.add(new ColumnData("Axis X", random.nextInt(maxValue), colors[random.nextInt(colors.length)]));
+            test.add(new ColumnData("Axis X", random.nextInt(maxValue), colors[random.nextInt(colors.length)]));
         }
 
         return test;
