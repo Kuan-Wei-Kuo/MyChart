@@ -72,16 +72,6 @@ public class ComputeScrollHandler{
         }
     }
 
-    private void fling(int startX, int startY, int velocityX, int velocityY, ChartCompute chartCompute) {
-
-        SCROLLER_MODE = FLING_MODE;
-
-        int maxX = (int) chartCompute.getMinViewport().left;
-        int maxY = (int) chartCompute.getMinViewport().top;
-
-        mScroller.fling(startX, startY, velocityX, 0, startX, maxX, startY, maxY);
-    }
-
     public void obtainVelocityTracker(MotionEvent event) {
         if (mVelocityTracker == null) {
             mVelocityTracker = VelocityTracker.obtain();
