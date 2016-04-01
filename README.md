@@ -1,22 +1,23 @@
- 
- 
- >MyChart is a sample & easy to use chart library for Android. It runs on API level 15 and upwards.
- 
- It's had no animation and powerful, so it's very sample example.
- 
- if you have any question, you can writing e-mail for me.
- 
- Okay, thank you for wacthing.
- 
- >MyChart 是一個功能簡單與方便使用的圖表在Android上，Android版本為15以上。
- 
- 它沒有動畫與強大的功能，所以這只是一個非常簡單的範例。
- 
- 如果你有任何問題，歡迎寄信給我看看。
- 
- 
+###New Update
+
+>更新水平滑動演算法，使用Scroller與VelocityTracker達到慣性移動的效果。
+>原先打算自己寫個Buffer但有點懶...你們知道的。
+>
+>Update ChartTouchHandler.class and Add ChartScroll.class
+>>Use Scroller with VelocityTracker to reach smooth move and fling move.
+***
+
+>MyChart is a sample & easy to use chart library for Android. It runs on API level 15 and upwards.
+>It's had no animation and powerful, so it's very sample example.
+>if you have any question, you can writing e-mail for me.
+>Okay, thank you for wacthing.
+>
+>MyChart 是一個功能簡單與方便使用的圖表在Android上，Android版本為15以上。
+>它沒有動畫與強大的功能，所以這只是一個非常簡單的範例。
+>如果你有任何問題，歡迎寄信給我看看。
+>
 >MyChart just had only three chart view. I'll keep on update.
- 
+>
 >目前只有製作三種圖表，未來會繼續斟酌更新。
 
 ###長條圖
