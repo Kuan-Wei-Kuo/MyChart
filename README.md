@@ -1,9 +1,8 @@
-###New Update
-
->更新水平滑動演算法，使用Scroller與VelocityTracker達到慣性移動的效果。
->原先打算自己寫個Buffer但有點懶...你們知道的。
->
+###New Update 2016/04/01
 >Update ChartTouchHandler.class and Add ChartScroll.class
+>>更新水平滑動演算法，使用Scroller與VelocityTracker達到慣性移動的效果。
+>>原先打算自己寫個Buffer但有點懶...你們知道的。
+>>
 >>Use Scroller with VelocityTracker to reach smooth move and fling move.
 ***
 
