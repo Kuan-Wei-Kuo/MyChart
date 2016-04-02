@@ -1,5 +1,7 @@
 package com.kuo.mychartlib.listener;
 
+import android.view.View;
+
 import com.kuo.mychartlib.presenter.ChartCompute;
 import com.kuo.mychartlib.renderer.AbsChartRenderer;
 
@@ -8,9 +10,15 @@ import com.kuo.mychartlib.renderer.AbsChartRenderer;
  */
 public interface ChartListener {
 
-    ChartCompute getChartCompute();
+    View getView();
+
+    void setAbsChartRenderer(AbsChartRenderer absChartRenderer);
 
     void setChartCompute(ChartCompute chartCompute);
 
-    void setAbsChartRenderer(AbsChartRenderer absChartRenderer);
+    ChartCompute getChartCompute();
+
+    void setOrientation(int orientation);
+
+    int getOrientation();
 }

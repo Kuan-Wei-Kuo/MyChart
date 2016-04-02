@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import com.kuo.mychartlib.handler.ComputeZoomHandler;
 import com.kuo.mychartlib.model.ColumnData;
 import com.kuo.mychartlib.until.ChartRendererUntil;
 import com.kuo.mychartlib.view.ColumnChartView;
@@ -50,6 +51,7 @@ public class ColumnFragment extends Fragment {
     private void init() {
 
         columnChartView = (ColumnChartView) rootView.findViewById(R.id.columnChartView);
+        columnChartView.setOrientation(ComputeZoomHandler.HORIZONTAL);
 
         size_seek = (SeekBar) rootView.findViewById(R.id.size_seek);
         value_seek = (SeekBar) rootView.findViewById(R.id.value_seek);

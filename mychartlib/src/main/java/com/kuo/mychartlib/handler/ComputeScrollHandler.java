@@ -13,16 +13,16 @@ import com.kuo.mychartlib.presenter.ChartCompute;
  */
 public class ComputeScrollHandler{
 
-    private Context context;
     private float offestX, offestY;
-    private Scroller mScroller;
-    private ViewConfiguration mViewConfiguration;
-    private VelocityTracker mVelocityTracker;
 
     public static final int SCROLL_MODE = 0;
     public static final int FLING_MODE = 1;
 
     public int SCROLLER_MODE = -1;
+
+    private Scroller mScroller;
+    private ViewConfiguration mViewConfiguration;
+    private VelocityTracker mVelocityTracker;
 
     private int mScaledMinimumFlingVelocity;
     private int mScaledMaximumFlingVelocity;
@@ -37,17 +37,17 @@ public class ComputeScrollHandler{
         mScaledMaximumFlingVelocity = mViewConfiguration.getScaledMaximumFlingVelocity();
     }
 
-    public void setPreviousOffest(float offestX, float offestY) {
+    protected void setPreviousOffest(float offestX, float offestY) {
         this.offestX = offestX;
         this.offestY = offestY;
     }
 
-    public void startScroll(MotionEvent event) {
+    protected void startScroll(MotionEvent event) {
         SCROLLER_MODE = SCROLL_MODE;
         mScroller.startScroll((int) event.getX(), (int) event.getY(), (int) offestX, (int) offestY, 1);
     }
 
-    public void startFling(float startX, float startY, ChartCompute chartCompute) {
+    protected void startFling(float startX, float startY, ChartCompute chartCompute) {
 
         SCROLLER_MODE = FLING_MODE;
 
@@ -72,29 +72,33 @@ public class ComputeScrollHandler{
         }
     }
 
-    public void obtainVelocityTracker(MotionEvent event) {
+    protected void obtainVelocityTracker(MotionEvent event) {
         if (mVelocityTracker == null) {
             mVelocityTracker = VelocityTracker.obtain();
         }
         mVelocityTracker.addMovement(event);
     }
 
-    public void computeCurrentVelocity(int units) {
+    protected void computeCurrentVelocity(int units) {
         mVelocityTracker.computeCurrentVelocity(units, mScaledMaximumFlingVelocity);
     }
 
-    public void releaseVelocityTracker() {
+    protected void releaseVelocityTracker() {
         if (mVelocityTracker != null) {
             mVelocityTracker.recycle();
             mVelocityTracker = null;
         }
     }
 
-    public Scroller getScroller() {
+    protected void stopAnimation() {
+        mScroller.abortAnimation();
+    }
+
+    protected Scroller getScroller() {
         return mScroller;
     }
 
-    public int getCurScrollerMode() {
+    protected int getCurScrollerMode() {
         return SCROLLER_MODE;
     }
 }

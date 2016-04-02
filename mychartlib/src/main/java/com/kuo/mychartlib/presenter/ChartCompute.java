@@ -1,5 +1,8 @@
 package com.kuo.mychartlib.presenter;
 
+import android.view.MotionEvent;
+
+import com.kuo.mychartlib.handler.ComputeZoomHandler;
 import com.kuo.mychartlib.model.Viewport;
 
 /*
@@ -23,9 +26,8 @@ public class ChartCompute {
 
     protected float maxValue = 0f;
 
-    public ChartCompute(Viewport minViewport) {
-        this.minViewport = minViewport;
-        curViewport = new Viewport(minViewport.left, minViewport.top, minViewport.right, minViewport.bottom);
+    public ChartCompute() {
+
     }
 
     public void setChartHeight(int chartHeight) {
@@ -97,14 +99,6 @@ public class ChartCompute {
         return curMargin;
     }
 
-    public void setTouchState(int touchState) {
-        this.touchState = touchState;
-    }
-
-    public int getTouchState() {
-        return touchState;
-    }
-
     public void setCurViewport(float left, float top, float right, float bottom) {
 
         if(left > minViewport.left) {
@@ -132,5 +126,15 @@ public class ChartCompute {
         curViewport.top = top;
         curViewport.bottom = bottom;
 
+    }
+
+    protected int orientation = ComputeZoomHandler.HORIZONTAL_VERTICAL;
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+    }
+
+    public int getOrientation() {
+        return orientation;
     }
 }

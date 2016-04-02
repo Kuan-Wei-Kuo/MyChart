@@ -37,6 +37,8 @@ public abstract class AbsChartView extends View implements ChartListener {
 
     public AbsChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        chartCompute = new ChartCompute();
     }
 
     @Override
@@ -56,10 +58,6 @@ public abstract class AbsChartView extends View implements ChartListener {
         this.absChartRenderer = absChartRenderer;
     }
 
-    public Viewport getViewport() {
-        return chartCompute.getCurViewport();
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -71,7 +69,6 @@ public abstract class AbsChartView extends View implements ChartListener {
 
         chartTouchHandler = new ChartTouchHandler(getContext(), this);
 
-        chartCompute = new ChartCompute(new Viewport(0, 0, w, h));
         chartCompute.setChartWidth(w);
         chartCompute.setChartHeight(h);
 
@@ -91,6 +88,21 @@ public abstract class AbsChartView extends View implements ChartListener {
     public void upadteChart() {
         absChartRenderer.prepareCompute();
         invalidate();
+    }
+
+    @Override
+    public void setOrientation(int orientation) {
+        chartCompute.setOrientation(orientation);
+    }
+
+    @Override
+    public int getOrientation() {
+        return chartCompute.getOrientation();
+    }
+
+    @Override
+    public View getView() {
+        return this;
     }
 
     @Override
