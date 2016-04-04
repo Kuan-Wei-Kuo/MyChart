@@ -1,5 +1,7 @@
 package com.kuo.mychartlib.presenter;
 
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 
 import com.kuo.mychartlib.handler.ComputeZoomHandler;
@@ -137,4 +139,5 @@ public class ChartCompute {
     public int getOrientation() {
         return orientation;
     }
+
 }

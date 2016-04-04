@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.kuo.mychartlib.listener.ChartGenericListener;
 import com.kuo.mychartlib.listener.ChartListener;
@@ -12,6 +13,7 @@ import com.kuo.mychartlib.model.AxisData;
 import com.kuo.mychartlib.model.ChartData;
 import com.kuo.mychartlib.model.Viewport;
 import com.kuo.mychartlib.presenter.ChartCompute;
+import com.kuo.mychartlib.until.ChartRendererUntil;
 
 import java.util.ArrayList;
 
@@ -55,6 +57,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
         drawXY(canvas);
         drawAxisX(canvas);
         drawAxisY(canvas);
+        drawValues(canvas);
     }
 
     private void drawXY(Canvas canvas) {
@@ -75,20 +78,78 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
                 minViewport.bottom, linePaint);
     }
 
+    public float getRawX(RectF rectF) {
+
+        Viewport minViewport = chartListener.getChartCompute().getMinViewport();
+
+        float x = rectF.right == minViewport.right ? rectF.left : rectF.right - columnWidth;
+
+        return x;
+    }
+
+    public float getRawY(RectF rectF, float value) {
+
+        ChartCompute chartCompute = chartListener.getChartCompute();
+        Viewport curViewport = chartCompute.getCurViewport();
+        Viewport minViewport = chartCompute.getMinViewport();
+
+        float y = rectF.bottom == minViewport.bottom ? rectF.top : curViewport.bottom - curViewport.height() / (chartCompute.getMaxValue() + 20) * value;
+
+        return y;
+    }
+
+    private void drawValues(Canvas canvas) {
+
+        ChartCompute chartCompute = chartListener.getChartCompute();
+        ArrayList<? extends ChartData> chartDatas = chartGenericListener.getChartData();
+        Viewport minViewport = chartCompute.getMinViewport();
+
+        int count = 0;
+
+        for(RectF rectF : rectFs) {
+
+            String text = String.valueOf(chartDatas.get(count).getValue());
+
+            Rect rect = new Rect();
+            textPaint.getTextBounds(text, 0, text.length(), rect);
+
+            float x = getRawX(rectF) + columnWidth / 2 - rect.width() / 2;
+            float y = rectF.top - chartCompute.getMaxTextHeight();
+
+            if (minViewport.contains(getRawX(rectF) + columnWidth / 2, y)) {
+                canvas.drawText(text, x, y, textPaint);
+            }
+
+            count++;
+        }
+
+    }
+
     private void drawSeparationLines(Canvas canvas) {
 
         ChartCompute chartCompute = chartListener.getChartCompute();
+        Viewport curViewport = chartCompute.getCurViewport();
         Viewport minViewport = chartCompute.getMinViewport();
 
-        int size = 5;
+        float margin = ChartRendererUntil.dp2px(getContext().getResources().getDisplayMetrics().density, 60);
 
-        float maxValue = chartCompute.getMaxValue();
+        float size = curViewport.height() / margin;
 
-        for(int i = 1 ; i <= size ; i++) {
-            canvas.drawLine(minViewport.left,
-                    minViewport.bottom - minViewport.height() / maxValue * maxValue / size * i,
-                    minViewport.right,
-                    minViewport.bottom - minViewport.height() / maxValue * maxValue / size * i, linePaint);
+        float maxValue = chartCompute.getMaxValue() + 20;
+
+
+        for(int i = 1 ; i <= size; i++) {
+
+            float y = curViewport.bottom - curViewport.height() / maxValue * maxValue / size * i;
+
+            if(minViewport.contains((int) minViewport.left, (int) y)) {
+
+                canvas.drawLine(minViewport.left,
+                        y,
+                        minViewport.right,
+                        y, linePaint);
+            }
+
         }
 
     }
@@ -96,18 +157,27 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
     private void drawAxisY(Canvas canvas) {
 
         ChartCompute chartCompute = chartListener.getChartCompute();
+        Viewport curViewport = chartCompute.getCurViewport();
         Viewport minViewport = chartCompute.getMinViewport();
 
-        int size = 5;
+        float margin = ChartRendererUntil.dp2px(getContext().getResources().getDisplayMetrics().density, 60);
 
-        float maxValue = chartCompute.getMaxValue();
+        float size = curViewport.height() / margin;
+
+        float maxValue = chartCompute.getMaxValue() + 20;
 
         String floatFormat = "%.1f";
 
         for(int i = 1 ; i <= size ; i++) {
-            canvas.drawText(String.format(floatFormat, maxValue / size * i),
-                    0,
-                    minViewport.bottom - minViewport.height() / maxValue * maxValue / size * i + chartCompute.getMaxTextHeight() / 2, textPaint);
+
+            float y = curViewport.bottom - curViewport.height() / maxValue * maxValue / size * i +
+                    chartCompute.getMaxTextHeight() / 2;
+
+            if(minViewport.contains((int) minViewport.left, (int) y)) {
+                canvas.drawText(String.format(floatFormat, maxValue / size * i),
+                        0,
+                        y, textPaint);
+            }
         }
 
     }
@@ -118,21 +188,31 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
         Viewport minViewport = chartCompute.getMinViewport();
 
-        for(AxisData axisData : axisDatas) {
+        ArrayList<? extends ChartData> chartDatas = chartGenericListener.getChartData();
 
-            Rect rectText = new Rect();
-            textPaint.getTextBounds(axisData.getAxis(), 0, axisData.getAxis().length(), rectText);
+        int count = 0;
 
-            int textWidth = rectText.width();
+        for(RectF rectF : rectFs) {
 
-            if(axisData.x + textWidth / 2 > minViewport.left &&
-                    axisData.x + textWidth / 2 < minViewport.right && axisData.isEnable())  {
+            String text = chartDatas.get(count).getValueName();
 
-                canvas.drawText(axisData.getAxis(),
-                        axisData.x,
-                        axisData.y, textPaint);
+            Rect rect = new Rect();
+            textPaint.getTextBounds(text, 0, text.length(), rect);
+
+            float x = getRawX(rectF) + columnWidth / 2 - rect.width() / 2;
+            float y = minViewport.bottom + chartCompute.getMaxTextHeight();
+
+            if(Math.abs(x - pointF.x) > rect.width() ||
+                    rect.width() > chartCompute.getMaxTextWidth() ||
+                    pointF.x == 0) {
+                if(minViewport.contains(getRawX(rectF) + columnWidth / 2, minViewport.bottom - 1)) {
+                    Log.d("x", x + "");
+                    canvas.drawText(text, x, y, textPaint);
+                    pointF.x = x;
+                }
             }
 
+            count++;
         }
     }
 
@@ -209,38 +289,27 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
         for(ChartData chartData : chartDatas) {
 
             float left = curViewport.left + count * (columnWidth + columnMargin) + chartCompute.getPadding();
-            float top = curViewport.bottom - curViewport.height() / chartCompute.getMaxValue() * chartData.getValue();
+            float top = curViewport.bottom - curViewport.height() / (chartCompute.getMaxValue() + 20) * chartData.getValue();
             float right = left + columnWidth;
             float bottom = curViewport.bottom;
 
             if(left < minViewport.left) {
                 left = minViewport.left;
-            }else if(right > minViewport.right) {
+            }
+
+            if(right > minViewport.right) {
                 right = minViewport.right;
             }
 
-            rectFs.add(new Viewport(left, top, right, bottom));
-
-            Rect rectText = new Rect();
-            textPaint.getTextBounds(chartData.getValueName(),
-                    0,
-                    chartData.getValueName().length(), rectText);
-
-            int textWidth = rectText.width();
-
-            float x = right == minViewport.right ? left + columnWidth / 2 - textWidth / 2 : right - columnWidth + columnWidth / 2 - textWidth / 2;
-            float y = bottom + chartCompute.getMaxTextHeight();
-
-            AxisData axisData = new AxisData(x, y);
-            axisData.setAxis(chartData.getValueName());
-
-            if(Math.abs(x - pointF.x) > textWidth ||
-                    right - left > chartCompute.getMaxTextWidth() || pointF.x == 0) {
-                pointF.x = x;
-                axisData.setIsEnable(true);
+            if(top < minViewport.top) {
+                top = minViewport.top;
             }
 
-            axisDatas.add(axisData);
+            if(bottom > minViewport.bottom) {
+                bottom = minViewport.bottom;
+            }
+
+            rectFs.add(new Viewport(left, top, right, bottom));
 
             count++;
         }

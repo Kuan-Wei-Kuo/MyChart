@@ -51,7 +51,7 @@ public class ColumnFragment extends Fragment {
     private void init() {
 
         columnChartView = (ColumnChartView) rootView.findViewById(R.id.columnChartView);
-        columnChartView.setOrientation(ComputeZoomHandler.HORIZONTAL);
+        columnChartView.setOrientation(ComputeZoomHandler.VERTICAL);
 
         size_seek = (SeekBar) rootView.findViewById(R.id.size_seek);
         value_seek = (SeekBar) rootView.findViewById(R.id.value_seek);
@@ -62,6 +62,11 @@ public class ColumnFragment extends Fragment {
         size_seek.setOnSeekBarChangeListener(seekBarChangeListener);
         value_seek.setOnSeekBarChangeListener(seekBarChangeListener);
 
+
+        size = 8;
+        maxValue = 100;
+
+        columnChartView.setColumnData(computeColumnData(size, maxValue));
     }
 
     private ArrayList<ColumnData> computeColumnData(int size, int maxValue) {
