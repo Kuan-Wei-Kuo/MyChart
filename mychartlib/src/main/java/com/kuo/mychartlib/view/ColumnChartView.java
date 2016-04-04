@@ -46,4 +46,5 @@ public class ColumnChartView extends AbsChartView implements ChartGenericListene
     public void setColumnData(ArrayList<ColumnData> columnData) {
         this.chartData.setChartData(columnData);
     }
+
 }

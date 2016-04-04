@@ -23,6 +23,9 @@ public class ChartTouchHandler {
     public static final int TOUCH_SCROLL = 0;
     public static final int TOUCH_ZOOM = 1;
 
+    public static final int TOUCH_SCALE_SCROLL = 0;
+
+    private int touchType = -1;
     private int touchState = TOUCH_NONE;
 
     private boolean enable = true;
@@ -48,13 +51,17 @@ public class ChartTouchHandler {
 
                 case MotionEvent.ACTION_DOWN:
 
-                    touchState = TOUCH_SCROLL;
+                    if(touchType == TOUCH_SCALE_SCROLL) {
 
-                    float offsetX = chartCompute.getCurViewport().left - event.getX();
-                    float offsetY = chartCompute.getCurViewport().top - event.getY();
+                        touchState = TOUCH_SCROLL;
 
-                    computeScrollHandler.stopAnimation();
-                    computeScrollHandler.setPreviousOffest(offsetX, offsetY);
+                        float offsetX = chartCompute.getCurViewport().left - event.getX();
+                        float offsetY = chartCompute.getCurViewport().top - event.getY();
+
+                        computeScrollHandler.stopAnimation();
+                        computeScrollHandler.setPreviousOffest(offsetX, offsetY);
+
+                    }
 
                     break;
 
@@ -115,5 +122,9 @@ public class ChartTouchHandler {
 
     public boolean isEnable() {
         return enable;
+    }
+
+    public void setTouchType(int touchType) {
+        this.touchType = touchType;
     }
 }

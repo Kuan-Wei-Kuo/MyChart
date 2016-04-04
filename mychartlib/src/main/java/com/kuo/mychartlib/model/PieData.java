@@ -3,19 +3,13 @@ package com.kuo.mychartlib.model;
 /**
  * Created by User on 2016/2/28.
  */
-public class PieData {
+public class PieData extends ChartData{
 
-    private float persent, point;
+    private float persent;
     private float angle;
 
-    private String lableText;
-
-    private int color, imageSrc;
-
-    public PieData(float point, int color, String lableText, int imageSrc) {
-        this.point = point;
-        this.color = color;
-        this.imageSrc = imageSrc;
+    public PieData(String valueName, float value, int valueColor) {
+        super(valueName, value, valueColor);
     }
 
     public void setPersent(float persent) {
@@ -26,27 +20,11 @@ public class PieData {
         return persent;
     }
 
-    public float getPoint() {
-        return point;
-    }
-
     public void setAngle(float angle) {
         this.angle = angle;
     }
 
-    public int getColor() {
-        return color;
-    }
-
     public float getAngle() {
         return angle;
-    }
-
-    public int getImageSrc() {
-        return imageSrc;
-    }
-
-    public String getLableText() {
-        return lableText;
     }
 }

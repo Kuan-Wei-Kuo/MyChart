@@ -72,7 +72,7 @@ public class PieFragment extends Fragment {
         Random random = new Random();
 
         for(int i = 0 ; i < size ; i++) {
-            PieData pieData = new PieData(random.nextInt(maxValue), colors[random.nextInt(colors.length)], "" + i, 0);
+            PieData pieData = new PieData( "" + i, random.nextInt(maxValue), colors[random.nextInt(colors.length)]);
             pieDatas.add(pieData);
         }
 

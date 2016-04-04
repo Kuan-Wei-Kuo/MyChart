@@ -9,7 +9,9 @@ import android.graphics.RectF;
 
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.listener.PieDataListener;
+import com.kuo.mychartlib.model.ChartData;
 import com.kuo.mychartlib.model.PieData;
+import com.kuo.mychartlib.model.Viewport;
 import com.kuo.mychartlib.presenter.ChartCompute;
 import com.kuo.mychartlib.until.ChartRendererUntil;
 
@@ -37,7 +39,7 @@ public class PieChartRenderer extends AbsChartRenderer {
 
     @Override
     public void prepareCompute() {
-
+        prepareChartCompute();
     }
 
     @Override
@@ -55,16 +57,16 @@ public class PieChartRenderer extends AbsChartRenderer {
 
     private void comparePieData() {
 
-        int totalPoint = 0;
+        int totalValue = 0;
 
         ArrayList<PieData> pieDatas = pieDataListener.getPieData();
 
         for(PieData pieData : pieDatas) {
-            totalPoint += pieData.getPoint();
+            totalValue += pieData.getValue();
         }
 
         for(PieData pieData : pieDatas) {
-            pieData.setPersent(pieData.getPoint() / totalPoint * 100);
+            pieData.setPersent(pieData.getValue() / totalValue * 100);
             pieData.setAngle(pieData.getPersent() * 0.01f * 360f);
         }
     }
@@ -94,7 +96,7 @@ public class PieChartRenderer extends AbsChartRenderer {
         rectPaint.setStrokeWidth(ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 5));
 
         for(PieData pieData : pieDatas) {
-            rectPaint.setColor(pieData.getColor());
+            rectPaint.setColor(pieData.getValueColor());
 
             canvas.drawArc(rectF, angles, pieData.getAngle(), true, rectPaint);
 
@@ -149,10 +151,10 @@ public class PieChartRenderer extends AbsChartRenderer {
             float x2 = pointF.x * radius * 1.5f + rectF.centerX();
             float y2 = pointF.y * radius * 1.5f + rectF.centerY();
 
-            linePaint.setColor(pieDatas.get(i).getColor());
+            linePaint.setColor(pieDatas.get(i).getValueColor());
             canvas.drawLine(x1, y1, x2, y2, linePaint);
 
-            rectPaint.setColor(pieDatas.get(i).getColor());
+            rectPaint.setColor(pieDatas.get(i).getValueColor());
             drawCircleLables(canvas, x2, y2, (int) pieDatas.get(i).getPersent() + "%");
         }
 
@@ -185,5 +187,53 @@ public class PieChartRenderer extends AbsChartRenderer {
 
         rectPaint.setColor(ChartRendererUntil.CHART_WHITE);
         canvas.drawCircle(rectF.centerX(), rectF.centerY(), radius / 2.5f, rectPaint);
+    }
+
+    private void prepareChartCompute() {
+
+        ChartCompute chartCompute = chartListener.getChartCompute();
+        ArrayList<PieData> pieDatas = pieDataListener.getPieData();
+
+        int maxTextWidth = 0;
+
+        int maxTextHeight = 0;
+
+        float maxValue = 0;
+
+        for(PieData pieData : pieDatas) {
+
+            Rect rectText = new Rect();
+            textPaint.getTextBounds(pieData.getValueName(), 0, pieData.getValueName().length(), rectText);
+
+            if(maxTextWidth < rectText.width()) {
+                maxTextWidth = rectText.width();
+            }
+
+            if(maxTextHeight < rectText.height()) {
+                maxTextHeight = rectText.height();
+            }
+
+            if(maxValue < pieData.getValue()) {
+                maxValue = pieData.getValue();
+            }
+        }
+
+        chartCompute.setMaxValue(maxValue);
+        chartCompute.setMaxTextWidth(maxTextWidth);
+        chartCompute.setMaxTextHeight(maxTextHeight);
+
+        float width = chartCompute.getChartWidth() > chartCompute.getChartHeight() ? chartCompute.getChartHeight() : chartCompute.getChartWidth();
+        float height = width;
+
+        float centerX = chartCompute.getChartWidth() / 2;
+        float centerY = chartCompute.getChartHeight() / 2;
+
+        float left = centerX - width / 2;
+        float top = centerY - height / 2;
+        float right = left + width;
+        float bottom = top + height;
+
+        chartCompute.setMinViewport(new Viewport(left, top, right, bottom));
+
     }
 }

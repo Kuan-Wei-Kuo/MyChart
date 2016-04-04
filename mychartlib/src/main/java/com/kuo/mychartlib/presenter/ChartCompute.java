@@ -15,8 +15,6 @@ public class ChartCompute {
     protected Viewport curViewport;
     protected Viewport minViewport;
 
-    protected int touchState;
-
     protected float curMargin = 0f;
 
     protected int padding = 20;
@@ -27,10 +25,6 @@ public class ChartCompute {
     protected int chartHeight = 0;
 
     protected float maxValue = 0f;
-
-    public ChartCompute() {
-
-    }
 
     public void setChartHeight(int chartHeight) {
         this.chartHeight = chartHeight;
@@ -64,10 +58,6 @@ public class ChartCompute {
         return maxTextHeight;
     }
 
-    public void setPadding(int padding) {
-        this.padding = padding;
-    }
-
     public int getPadding() {
         return padding;
     }
@@ -95,10 +85,6 @@ public class ChartCompute {
 
     public void setCurMargin(float curMargin) {
         this.curMargin = curMargin;
-    }
-
-    public float getCurMargin() {
-        return curMargin;
     }
 
     public void setCurViewport(float left, float top, float right, float bottom) {
@@ -130,6 +116,8 @@ public class ChartCompute {
 
     }
 
+
+
     protected int orientation = ComputeZoomHandler.HORIZONTAL_VERTICAL;
 
     public void setOrientation(int orientation) {
@@ -139,5 +127,6 @@ public class ChartCompute {
     public int getOrientation() {
         return orientation;
     }
+
 
 }

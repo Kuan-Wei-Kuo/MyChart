@@ -10,4 +10,5 @@ import java.util.ArrayList;
 public interface ChartGenericListener {
 
     ArrayList<? extends ChartData> getChartData();
+
 }
