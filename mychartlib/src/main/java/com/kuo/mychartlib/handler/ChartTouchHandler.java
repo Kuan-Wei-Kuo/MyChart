@@ -50,18 +50,14 @@ public class ChartTouchHandler {
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
                 case MotionEvent.ACTION_DOWN:
+                    
+                    touchState = TOUCH_SCROLL;
 
-                    if(touchType == TOUCH_SCALE_SCROLL) {
+                    float offsetX = chartCompute.getCurViewport().left - event.getX();
+                    float offsetY = chartCompute.getCurViewport().top - event.getY();
 
-                        touchState = TOUCH_SCROLL;
-
-                        float offsetX = chartCompute.getCurViewport().left - event.getX();
-                        float offsetY = chartCompute.getCurViewport().top - event.getY();
-
-                        computeScrollHandler.stopAnimation();
-                        computeScrollHandler.setPreviousOffest(offsetX, offsetY);
-
-                    }
+                    computeScrollHandler.stopAnimation();
+                    computeScrollHandler.setPreviousOffest(offsetX, offsetY);
 
                     break;
 
