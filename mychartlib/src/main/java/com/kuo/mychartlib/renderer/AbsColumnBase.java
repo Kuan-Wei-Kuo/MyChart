@@ -206,7 +206,6 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
                     rect.width() > chartCompute.getMaxTextWidth() ||
                     pointF.x == 0) {
                 if(minViewport.contains(getRawX(rectF) + columnWidth / 2, minViewport.bottom - 1)) {
-                    Log.d("x", x + "");
                     canvas.drawText(text, x, y, textPaint);
                     pointF.x = x;
                 }

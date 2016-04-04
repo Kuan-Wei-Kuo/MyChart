@@ -7,8 +7,6 @@ import android.widget.Scroller;
 
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.presenter.ChartCompute;
-import com.kuo.mychartlib.until.ChartRendererUntil;
-import com.kuo.mychartlib.view.AbsChartView;
 
 /*
  * Created by Kuo on 2016/3/21.
@@ -21,10 +19,13 @@ public class ChartTouchHandler {
 
     private ChartListener chartListener;
 
-    private int touchState = -1;
+    public static final int TOUCH_NONE = -1;
+    public static final int TOUCH_SCROLL = 0;
+    public static final int TOUCH_ZOOM = 1;
 
-    private static final int TOUCH_SCROLL = 0;
-    private static final int TOUCH_ZOOM = 1;
+    private int touchState = TOUCH_NONE;
+
+    private boolean enable = true;
 
     public ChartTouchHandler(Context context, ChartListener chartListener) {
 
@@ -37,60 +38,66 @@ public class ChartTouchHandler {
 
     public boolean onTouchEvent(MotionEvent event, final ChartCompute chartCompute) {
 
-        computeScrollHandler.obtainVelocityTracker(event);
+        if(enable) {
 
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            boolean isInvalidate = computeZoomHandler.startZoom(event, chartCompute);
 
-            case MotionEvent.ACTION_DOWN:
+            computeScrollHandler.obtainVelocityTracker(event);
 
-                computeScrollHandler.stopAnimation();
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
-                touchState = TOUCH_SCROLL;
+                case MotionEvent.ACTION_DOWN:
 
-                float offestX = chartCompute.getCurViewport().left - event.getX();
-                float offestY = chartCompute.getCurViewport().top - event.getY();
+                    touchState = TOUCH_SCROLL;
 
-                computeScrollHandler.stopAnimation();
-                computeScrollHandler.setPreviousOffest(offestX, offestY);
+                    float offsetX = chartCompute.getCurViewport().left - event.getX();
+                    float offsetY = chartCompute.getCurViewport().top - event.getY();
 
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
+                    computeScrollHandler.stopAnimation();
+                    computeScrollHandler.setPreviousOffest(offsetX, offsetY);
 
-                computeScrollHandler.stopAnimation();
+                    break;
 
-                if (ChartRendererUntil.getDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1)) > 10)
+                case MotionEvent.ACTION_POINTER_DOWN:
+
                     touchState = TOUCH_ZOOM;
 
-                break;
-            case MotionEvent.ACTION_MOVE:
+                    break;
 
-                if (touchState == TOUCH_SCROLL)
-                    computeScrollHandler.startScroll(event);
-                else if(touchState == TOUCH_ZOOM) {
-                    computeZoomHandler.startZoom(event, chartCompute);
-                }
+                case MotionEvent.ACTION_MOVE:
 
+                    if(touchState == TOUCH_SCROLL) {
+
+                        computeScrollHandler.startScroll(event);
+
+                        isInvalidate = true;
+                    }
+
+                    break;
+
+                case MotionEvent.ACTION_UP:
+
+                    if(touchState == TOUCH_SCROLL) {
+
+                        computeScrollHandler.computeCurrentVelocity(1000);
+
+                        computeScrollHandler.startFling(chartCompute.getCurViewport().left, chartCompute.getCurViewport().top, chartCompute);
+
+                        computeScrollHandler.releaseVelocityTracker();
+
+                        isInvalidate = true;
+                    }
+
+                    touchState = TOUCH_NONE;
+
+                    break;
+            }
+
+            if(isInvalidate) {
                 ViewCompat.postInvalidateOnAnimation(chartListener.getView());
-
-                break;
-            case MotionEvent.ACTION_UP:
-
-                if(touchState == TOUCH_SCROLL) {
-
-                    computeScrollHandler.computeCurrentVelocity(1000);
-
-                    computeScrollHandler.startFling(chartCompute.getCurViewport().left, chartCompute.getCurViewport().top, chartCompute);
-
-                    computeScrollHandler.releaseVelocityTracker();
-
-                    ViewCompat.postInvalidateOnAnimation(chartListener.getView());
-
-                }
-
-                touchState = -1;
-
-                break;
+            }
         }
+
         return true;
     }
 
@@ -98,7 +105,15 @@ public class ChartTouchHandler {
         return computeScrollHandler.getScroller();
     }
 
-    public int getCurScrollerMode() {
-        return computeScrollHandler.getCurScrollerMode();
+    public int getTouchState() {
+        return touchState;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public boolean isEnable() {
+        return enable;
     }
 }

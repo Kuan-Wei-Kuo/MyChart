@@ -41,6 +41,10 @@ public abstract class AbsChartView extends View implements ChartListener {
         chartCompute = new ChartCompute();
     }
 
+    public void setTouchEnable(boolean enable) {
+        chartTouchHandler.setEnable(enable);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -114,7 +118,7 @@ public abstract class AbsChartView extends View implements ChartListener {
 
             float left, right, top, bottom;
 
-            if(chartTouchHandler.getCurScrollerMode() == 0) {
+            if(chartTouchHandler.getTouchState() == ChartTouchHandler.TOUCH_SCROLL) {
                 left = mScroller.getFinalX();
                 top = mScroller.getFinalY();
             } else {
