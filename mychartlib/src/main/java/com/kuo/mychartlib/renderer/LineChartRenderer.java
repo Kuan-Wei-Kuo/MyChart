@@ -98,46 +98,79 @@ public class LineChartRenderer extends AbsColumnBase {
 
                 } else {
 
-                    curB_Distance = Math.abs(minViewport.bottom - rectF.top);
-                    curA_Distance = curB_Distance / oldB_Distance * oldA_Distance;
 
-                    if(oldRectF.top > minViewport.bottom) {
+                    if(oldRectF.top > minViewport.bottom || rectF.top > minViewport.bottom) {
 
-                        x1 = getRawRectF(oldRectF).centerX() + (oldA_Distance - curA_Distance);
-                        y1 = minViewport.bottom;
+                        curB_Distance = Math.abs(minViewport.bottom - rectF.top);
+                        curA_Distance = curB_Distance / oldB_Distance * oldA_Distance;
 
-                    } else if (rectF.top > minViewport.bottom) {
+                        if(oldRectF.top > minViewport.bottom) {
 
-                        x2 = getRawRectF(rectF).centerX() - curA_Distance;
-                        y2 = minViewport.bottom;
+                            x1 = getRawRectF(oldRectF).centerX() + (oldA_Distance - curA_Distance);
+                            y1 = minViewport.bottom;
 
+                        }
+
+                        if (rectF.top > minViewport.bottom) {
+
+                            x2 = getRawRectF(rectF).centerX() - curA_Distance;
+                            y2 = minViewport.bottom;
+
+                        }
                     }
 
-                    if(oldRectF.top < minViewport.top) {
+                    if(oldRectF.top < minViewport.top || rectF.top < minViewport.top) {
 
                         curB_Distance = Math.abs(minViewport.top - rectF.top);
                         curA_Distance = curB_Distance / oldB_Distance * oldA_Distance;
 
-                        x1 = getRawRectF(oldRectF).centerX() + (oldA_Distance - curA_Distance);
-                        y1 = minViewport.top;
-                    }
+                        if(oldRectF.top < minViewport.top) {
+                            x1 = getRawRectF(oldRectF).centerX() + (oldA_Distance - curA_Distance);
+                            y1 = minViewport.top;
+                        }
 
-                    if(getRawRectF(oldRectF).centerX() < minViewport.left) {
-
-                        curA_Distance = Math.abs(minViewport.left - getRawRectF(oldRectF).centerX());
-                        curB_Distance = curA_Distance / oldA_Distance * oldB_Distance;
-
-                        x1 = x1 > minViewport.left ? x1 : minViewport.left;
-
-                        if(oldRectF.top > rectF.top) {
-                            y1 = y1 < (oldRectF.top - curB_Distance) ? y1 : oldRectF.top - curB_Distance;
-                        } else {
-                            y1 = y1 > (oldRectF.top + curB_Distance) ? y1 : oldRectF.top + curB_Distance;
+                        if(rectF.top < minViewport.top) {
+                            x2 = getRawRectF(rectF).centerX() - curA_Distance;
+                            y2 = minViewport.top;
                         }
 
                     }
 
-                    canvas.drawLine(x1, y1, x2, y2, linePaint);
+                    if(getRawRectF(oldRectF).centerX() < minViewport.left || getRawRectF(rectF).centerX() > minViewport.right) {
+
+                        if(getRawRectF(oldRectF).centerX() < minViewport.left) {
+
+                            curA_Distance = Math.abs(minViewport.left - getRawRectF(oldRectF).centerX());
+                            curB_Distance = curA_Distance / oldA_Distance * oldB_Distance;
+
+                            x1 = x1 > minViewport.left ? x1 : minViewport.left;
+
+                            if(oldRectF.top > rectF.top) {
+                                y1 = y1 < (oldRectF.top - curB_Distance) ? y1 : oldRectF.top - curB_Distance;
+                            } else {
+                                y1 = y1 > (oldRectF.top + curB_Distance) ? y1 : oldRectF.top + curB_Distance;
+                            }
+
+                        }
+
+                        if(getRawRectF(rectF).centerX() > minViewport.right) {
+
+                            curA_Distance = Math.abs(minViewport.right - getRawRectF(oldRectF).centerX());
+                            curB_Distance = curA_Distance / oldA_Distance * oldB_Distance;
+
+                            x2 = x2 < minViewport.right ? x2 : minViewport.right;
+
+                            if(oldRectF.top > rectF.top) {
+                                y2 = y2 > (oldRectF.top - curB_Distance) ? y2 : oldRectF.top - curB_Distance;
+                            } else {
+                                y2 = y2 < (oldRectF.top + curB_Distance) ? y2 : oldRectF.top + curB_Distance;
+                            }
+                        }
+                    }
+
+                    if(minViewport.contains(x1, y1) && minViewport.contains(x2, y2)) {
+                        canvas.drawLine(x1, y1, x2, y2, linePaint);
+                    }
                 }
             }
 
