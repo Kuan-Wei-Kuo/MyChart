@@ -54,4 +54,9 @@ public class Viewport extends RectF {
     public float getMinWidth() {
         return minWidth;
     }
+
+    public boolean contains(float x, float y) {
+        return left < right && top < bottom  // check for empty first
+                && x >= left && x <= right && y >= top && y <= bottom;
+    }
 }

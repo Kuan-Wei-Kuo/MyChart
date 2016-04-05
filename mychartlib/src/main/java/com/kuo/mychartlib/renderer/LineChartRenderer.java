@@ -35,7 +35,7 @@ public class LineChartRenderer extends AbsColumnBase {
         rectPaint.setStrokeWidth(30);
 
         for(RectF rectF : rectFs) {
-            if(getRawRectF(rectF).centerX() > minViewport.left) {
+            if( minViewport.contains(getRawRectF(rectF).centerX(), rectF.top)) {
 
                 ColorDrawable colorDrawable = new ColorDrawable(getValueColor(count));
                 colorDrawable.setAlpha(150);
@@ -79,7 +79,11 @@ public class LineChartRenderer extends AbsColumnBase {
 
                 float newY =  oldRectF.top > rectF.top ? oldRectF.top - (oldB_Distance - curB_Distance) : oldRectF.top + oldB_Distance - curB_Distance ;
 
-                canvas.drawLine(newX, newY, getRawRectF(rectF).centerX(), rectF.top, linePaint);
+                newY = newY > minViewport.bottom ? minViewport.bottom : newY;
+
+                float y = rectF.top > minViewport.bottom ? minViewport.bottom : rectF.top;
+
+                canvas.drawLine(newX, newY, getRawRectF(rectF).centerX(), y, linePaint);
             }
 
             oldRectF = rectF;
