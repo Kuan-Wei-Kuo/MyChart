@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 
 import com.kuo.mychartlib.listener.ChartGenericListener;
 import com.kuo.mychartlib.listener.ChartListener;
@@ -65,29 +66,75 @@ public class LineChartRenderer extends AbsColumnBase {
 
         RectF oldRectF = null;
 
+        int count = 0;
+
         for(RectF rectF : rectFs) {
 
             if(oldRectF != null && getRawRectF(rectF).centerX() > minViewport.left) {
 
-                float newX = getRawRectF(oldRectF).centerX()  < minViewport.left ? minViewport.left : getRawRectF(oldRectF).centerX() ;
+                float x1 = getRawRectF(oldRectF).centerX()  < minViewport.left ? minViewport.left : getRawRectF(oldRectF).centerX();
+                float y1 = oldRectF.top > minViewport.bottom ? minViewport.bottom : oldRectF.top;
 
-                float oldA_Distance = getDistance(getRawRectF(oldRectF).centerX(), 0, getRawRectF(rectF).centerX(), 0);
-                float oldB_Distance = getDistance(0, oldRectF.top, 0, rectF.top);
+                float x2 = getRawRectF(rectF).centerX();
+                float y2 = rectF.top > minViewport.bottom ? minViewport.bottom : rectF.top;
 
-                float curA_Distance = getDistance(newX, 0, getRawRectF(rectF).centerX(), 0);
-                float curB_Distance = curA_Distance / oldA_Distance * oldB_Distance;
+                float oldA_Distance = Math.abs(getRawRectF(oldRectF).centerX() - getRawRectF(rectF).centerX());
+                float oldB_Distance = Math.abs(oldRectF.top - rectF.top);
 
-                float newY =  oldRectF.top > rectF.top ? oldRectF.top - (oldB_Distance - curB_Distance) : oldRectF.top + oldB_Distance - curB_Distance ;
+                float curA_Distance;
+                float curB_Distance;
 
-                newY = newY > minViewport.bottom ? minViewport.bottom : newY;
 
-                float y = rectF.top > minViewport.bottom ? minViewport.bottom : rectF.top;
+                if(minViewport.contains(getRawRectF(oldRectF).centerX(), oldRectF.top) &&
+                        minViewport.contains(getRawRectF(rectF).centerX(), rectF.top)) {
 
-                canvas.drawLine(newX, newY, getRawRectF(rectF).centerX(), y, linePaint);
+                    x1 = getRawRectF(oldRectF).centerX();
+                    y1 = oldRectF.top;
+
+                    x2 = getRawRectF(rectF).centerX();
+                    y2 = rectF.top;
+
+                    canvas.drawLine(x1, y1, x2, y2, linePaint);
+
+                } else {
+
+                    curB_Distance = Math.abs(minViewport.bottom - rectF.top);
+                    curA_Distance = curB_Distance / oldB_Distance * oldA_Distance;
+
+                    if(oldRectF.top > minViewport.bottom) {
+
+                        x1 = getRawRectF(oldRectF).centerX() + (oldA_Distance - curA_Distance);
+                        y1 = minViewport.bottom;
+
+                    } else if (rectF.top > minViewport.bottom) {
+
+                        x2 = getRawRectF(rectF).centerX() - curA_Distance;
+                        y2 = minViewport.bottom;
+
+                    }
+
+                    if(getRawRectF(oldRectF).centerX() < minViewport.left) {
+
+                        curA_Distance = Math.abs(minViewport.left - getRawRectF(oldRectF).centerX());
+                        curB_Distance = curA_Distance / oldA_Distance * oldB_Distance;
+
+                        x1 = x1 > minViewport.left ? x1 : minViewport.left;
+
+                        if(oldRectF.top > rectF.top) {
+                            y1 = y1 < (oldRectF.top - curB_Distance) ? y1 : oldRectF.top - curB_Distance;
+                        } else {
+                            y1 = y1 > (oldRectF.top + curB_Distance) ? y1 : oldRectF.top + curB_Distance;
+                        }
+
+                    }
+
+                    canvas.drawLine(x1, y1, x2, y2, linePaint);
+                }
             }
 
             oldRectF = rectF;
 
+            count++;
         }
     }
 

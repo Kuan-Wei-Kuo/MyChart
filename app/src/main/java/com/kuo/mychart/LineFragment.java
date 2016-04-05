@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import com.kuo.mychartlib.handler.ComputeZoomHandler;
 import com.kuo.mychartlib.model.LineData;
 import com.kuo.mychartlib.until.ChartRendererUntil;
 import com.kuo.mychartlib.view.LineChartView;
@@ -50,6 +51,7 @@ public class LineFragment extends Fragment {
     private void init() {
 
         lineChartView = (LineChartView) rootView.findViewById(R.id.lineChartView);
+        lineChartView.setLineData(computeLineData(5, 100));
 
         size_seek = (SeekBar) rootView.findViewById(R.id.size_seek);
         value_seek = (SeekBar) rootView.findViewById(R.id.value_seek);
