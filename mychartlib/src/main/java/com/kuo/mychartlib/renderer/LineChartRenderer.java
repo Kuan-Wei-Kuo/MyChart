@@ -113,6 +113,15 @@ public class LineChartRenderer extends AbsColumnBase {
 
                     }
 
+                    if(oldRectF.top < minViewport.top) {
+
+                        curB_Distance = Math.abs(minViewport.top - rectF.top);
+                        curA_Distance = curB_Distance / oldB_Distance * oldA_Distance;
+
+                        x1 = getRawRectF(oldRectF).centerX() + (oldA_Distance - curA_Distance);
+                        y1 = minViewport.top;
+                    }
+
                     if(getRawRectF(oldRectF).centerX() < minViewport.left) {
 
                         curA_Distance = Math.abs(minViewport.left - getRawRectF(oldRectF).centerX());

@@ -300,10 +300,6 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
                 right = minViewport.right;
             }
 
-            if(top < minViewport.top) {
-                top = minViewport.top;
-            }
-
             if(bottom > minViewport.bottom) {
                 bottom = minViewport.bottom;
             }
