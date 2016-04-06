@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
@@ -118,14 +119,12 @@ public abstract class AbsChartView extends View implements ChartListener {
 
             float left, right, top, bottom;
 
-            if(chartTouchHandler.getTouchState() == ChartTouchHandler.TOUCH_SCROLL) {
-                left = mScroller.getFinalX();
-                top = mScroller.getFinalY();
-            } else {
-                left = mScroller.getCurrX();
-                top = mScroller.getCurrY();
+            if(chartTouchHandler.getTouchState() != ChartTouchHandler.TOUCH_SCROLL) {
             }
 
+
+            left = mScroller.getCurrX();
+            top = mScroller.getCurrY();
             right = left + chartCompute.getCurViewport().width();
             bottom = top + chartCompute.getCurViewport().height();
 

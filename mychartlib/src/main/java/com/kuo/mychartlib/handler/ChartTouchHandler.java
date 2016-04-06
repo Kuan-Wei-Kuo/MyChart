@@ -2,7 +2,10 @@ package com.kuo.mychartlib.handler;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ViewParent;
 import android.widget.Scroller;
 
 import com.kuo.mychartlib.listener.ChartListener;
@@ -30,6 +33,9 @@ public class ChartTouchHandler {
 
     private boolean enable = true;
 
+    private GestureDetector gestureDetector;
+    private ViewParent viewParent;
+
     public ChartTouchHandler(Context context, ChartListener chartListener) {
 
         this.chartListener = chartListener;
@@ -37,67 +43,21 @@ public class ChartTouchHandler {
         computeScrollHandler = new ComputeScrollHandler(context);
 
         computeZoomHandler = new ComputeZoomHandler(context, chartListener.getOrientation());
+
+        gestureDetector = new GestureDetector(context, new ChartGestureDetector());
     }
 
-    public boolean onTouchEvent(MotionEvent event, final ChartCompute chartCompute) {
+    private ChartCompute chartCompute;
 
+    public boolean onTouchEvent(MotionEvent event, final ChartCompute chartCompute) {
+        this.chartCompute = chartCompute;
         if(enable) {
 
             boolean isInvalidate = computeZoomHandler.startZoom(event, chartCompute);
 
-            if(!computeZoomHandler.isScale())
-                computeScrollHandler.startOnTouch(event, chartCompute);
+            gestureDetector.onTouchEvent(event);
+            //if(!computeZoomHandler.isScale())
 
-                computeScrollHandler.obtainVelocityTracker(event);
-
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-
-                case MotionEvent.ACTION_DOWN:
-                    
-                    touchState = TOUCH_SCROLL;
-
-                    float offsetX = chartCompute.getCurViewport().left - event.getX();
-                    float offsetY = chartCompute.getCurViewport().top - event.getY();
-
-                    computeScrollHandler.stopAnimation();
-                    computeScrollHandler.setPreviousOffest(offsetX, offsetY);
-
-                    break;
-
-                case MotionEvent.ACTION_POINTER_DOWN:
-
-                    touchState = TOUCH_ZOOM;
-
-                    break;
-
-                case MotionEvent.ACTION_MOVE:
-
-                    if(touchState == TOUCH_SCROLL) {
-
-                        //computeScrollHandler.startScroll(event);
-
-                        isInvalidate = true;
-                    }
-
-                    break;
-
-                case MotionEvent.ACTION_UP:
-
-                    if(touchState != TOUCH_SCROLL) {
-
-                        computeScrollHandler.computeCurrentVelocity(1000);
-
-                        computeScrollHandler.startFling(chartCompute.getCurViewport().left, chartCompute.getCurViewport().top, chartCompute);
-
-                        computeScrollHandler.releaseVelocityTracker();
-
-                        isInvalidate = true;
-                    }
-
-                    touchState = TOUCH_NONE;
-
-                    break;
-            }
 
             if(isInvalidate) {
                 ViewCompat.postInvalidateOnAnimation(chartListener.getView());
@@ -123,7 +83,43 @@ public class ChartTouchHandler {
         return enable;
     }
 
-    public void setTouchType(int touchType) {
-        this.touchType = touchType;
+    public class ChartGestureDetector extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+
+            Log.d("onDown", "onDown");
+
+            touchState = 0;
+
+            computeScrollHandler.stopForce();
+            computeScrollHandler.setDownPosition(e.getX(), e.getY());
+            computeScrollHandler.setPreviousOffest(e.getX(), e.getY(), chartCompute);
+
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
+            Log.d("onScroll", "onScroll");
+
+            computeScrollHandler.startScroll((int) e2.getX(), (int) e2.getY(), distanceX, distanceY, chartCompute);
+            computeScrollHandler.setDownPosition(e2.getX(), e2.getY());
+
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+            Log.d("onFling", "onFling");
+
+            touchState = -1;
+            computeScrollHandler.stopForce();
+            computeScrollHandler.startFling((int) velocityX, (int) velocityY, chartCompute);
+
+            return true;
+        }
     }
 }
