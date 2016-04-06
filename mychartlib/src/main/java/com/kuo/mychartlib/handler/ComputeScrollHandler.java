@@ -59,14 +59,9 @@ public class ComputeScrollHandler{
     protected void startScroll(int x, int y, float distanceX, float distanceY, ChartCompute chartCompute) {
         SCROLLER_MODE = SCROLL_MODE;
 
-        //float left = chartCompute.getCurViewport().left + x - dX;
-        //float top = chartCompute.getCurViewport().top + y - dY;
-        //float right  = left + chartCompute.getCurViewport().width();
-        //float bottom = top + chartCompute.getCurViewport().height();
-
+        //將我們當前View的高度與顯示的高度做除法運算，在乘上當前的X||Y位移的亮，來避免因為點擊而造成位移量亂改變
         float viewportOffsetX = -distanceX * chartCompute.getCurViewport().width() / chartCompute.getMinViewport().width();
         float viewportOffsetY = -distanceY * chartCompute.getCurViewport().height() / chartCompute.getMinViewport().height();
-
 
         float left = chartCompute.getCurViewport().left + viewportOffsetX;
         float top = chartCompute.getCurViewport().top + viewportOffsetY;
@@ -74,12 +69,6 @@ public class ComputeScrollHandler{
         float bottom = top + chartCompute.getCurViewport().height();
 
         chartCompute.setCurViewport(left, top, right, bottom);
-        //chartCompute.getCurViewport().left = chartCompute.getCurViewport().left + viewportOffsetX;
-        //chartCompute.getCurViewport().top = chartCompute.getCurViewport().top + viewportOffsetY;
-        //chartCompute.getCurViewport().right = chartCompute.getCurViewport().left + curW;
-        //chartCompute.getCurViewport().bottom = chartCompute.getCurViewport().top + curH;
-
-        //mScroller.startScroll(x, y, (int) offsetX, (int) offsetY, 1);
     }
 
     protected void startFling(int velocityX, int velocityY, ChartCompute chartCompute) {
