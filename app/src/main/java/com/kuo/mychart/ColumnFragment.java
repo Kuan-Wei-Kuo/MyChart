@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
-import com.kuo.mychartlib.handler.ComputeZoomHandler;
 import com.kuo.mychartlib.model.ColumnData;
 import com.kuo.mychartlib.until.ChartRendererUntil;
 import com.kuo.mychartlib.view.ColumnChartView;
@@ -51,7 +50,6 @@ public class ColumnFragment extends Fragment {
     private void init() {
 
         columnChartView = (ColumnChartView) rootView.findViewById(R.id.columnChartView);
-        columnChartView.setOrientation(ComputeZoomHandler.VERTICAL);
 
         size_seek = (SeekBar) rootView.findViewById(R.id.size_seek);
         value_seek = (SeekBar) rootView.findViewById(R.id.value_seek);
@@ -78,7 +76,7 @@ public class ColumnFragment extends Fragment {
         Random random = new Random();
 
         for(int i = 0 ; i < size ; i++) {
-            test.add(new ColumnData("Axis X", random.nextInt(maxValue), colors[random.nextInt(colors.length)]));
+            test.add(new ColumnData("Axis " + i, random.nextInt(maxValue), colors[random.nextInt(colors.length)]));
         }
 
         return test;

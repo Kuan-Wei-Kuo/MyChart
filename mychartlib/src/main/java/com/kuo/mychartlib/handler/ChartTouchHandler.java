@@ -45,7 +45,10 @@ public class ChartTouchHandler {
 
             boolean isInvalidate = computeZoomHandler.startZoom(event, chartCompute);
 
-            computeScrollHandler.obtainVelocityTracker(event);
+            if(!computeZoomHandler.isScale())
+                computeScrollHandler.startOnTouch(event, chartCompute);
+
+                computeScrollHandler.obtainVelocityTracker(event);
 
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
@@ -71,7 +74,7 @@ public class ChartTouchHandler {
 
                     if(touchState == TOUCH_SCROLL) {
 
-                        computeScrollHandler.startScroll(event);
+                        //computeScrollHandler.startScroll(event);
 
                         isInvalidate = true;
                     }
@@ -80,7 +83,7 @@ public class ChartTouchHandler {
 
                 case MotionEvent.ACTION_UP:
 
-                    if(touchState == TOUCH_SCROLL) {
+                    if(touchState != TOUCH_SCROLL) {
 
                         computeScrollHandler.computeCurrentVelocity(1000);
 

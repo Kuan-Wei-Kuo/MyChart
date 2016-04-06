@@ -51,6 +51,7 @@ public class PieFragment extends Fragment {
     private void init() {
 
         pieChartView = (PieChartView) rootView.findViewById(R.id.pieChartView);
+        pieChartView.setPieData(computePieData(5, 100));
 
         size_seek = (SeekBar) rootView.findViewById(R.id.size_seek);
         value_seek = (SeekBar) rootView.findViewById(R.id.value_seek);

@@ -6,6 +6,7 @@ import android.graphics.RectF;
 
 import com.kuo.mychartlib.listener.ChartGenericListener;
 import com.kuo.mychartlib.listener.ChartListener;
+import com.kuo.mychartlib.model.Viewport;
 
 import java.util.ArrayList;
 
@@ -21,12 +22,18 @@ public class ColumnChartRenderer extends AbsColumnBase {
     @Override
     public void drawRects(Canvas canvas) {
 
+        Viewport minViewport = chartListener.getChartCompute().getMinViewport();
         ArrayList<RectF> rectFs = getRectFs();
 
         int count = 0;
 
         for(RectF rectF : rectFs) {
             rectPaint.setColor(getValueColor(count));
+
+            if(rectF.top < minViewport.top) {
+                rectF.top = minViewport.top;
+            }
+
             canvas.drawRect(rectF, rectPaint);
             count++;
         }

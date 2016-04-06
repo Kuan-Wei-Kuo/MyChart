@@ -3,7 +3,6 @@ package com.kuo.mychartlib.handler;
 import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
@@ -25,6 +24,8 @@ public class ComputeZoomHandler {
     private ChartCompute chartCompute;
 
     private float lastSpan;
+
+    private boolean isScale = false;
 
     private PointF viewfocus = new PointF();
 
@@ -152,6 +153,10 @@ public class ComputeZoomHandler {
         return true;
     }
 
+    public boolean isScale() {
+        return isScale;
+    }
+
     public class ChartScaleGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
 
         @Override
@@ -187,6 +192,7 @@ public class ComputeZoomHandler {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
 
+            isScale = true;
             lastSpan = detector.getCurrentSpan();
 
             return true;
@@ -194,6 +200,7 @@ public class ComputeZoomHandler {
 
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
+            isScale = false;
         }
 
     }
