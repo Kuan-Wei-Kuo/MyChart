@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
-import com.kuo.mychartlib.handler.ComputeZoomHandler;
 import com.kuo.mychartlib.model.LineData;
 import com.kuo.mychartlib.until.ChartRendererUntil;
 import com.kuo.mychartlib.view.LineChartView;

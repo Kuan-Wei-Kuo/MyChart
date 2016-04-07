@@ -2,11 +2,9 @@ package com.kuo.mychartlib.handler;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.ViewParent;
-import android.widget.Scroller;
+import android.view.ScaleGestureDetector;
 
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.presenter.ChartCompute;
@@ -16,63 +14,53 @@ import com.kuo.mychartlib.presenter.ChartCompute;
  */
 public class ChartTouchHandler {
 
-    private ComputeScrollHandler computeScrollHandler;
+    public static final int HORIZONTAL_VERTICAL = 0;
+    public static final int HORIZONTAL = 1;
+    public static final int VERTICAL = 2;
 
-    private ComputeZoomHandler computeZoomHandler;
+    private int orientation = HORIZONTAL_VERTICAL;
+
+    private ComputeScroll computeScroll;
+
+    private ComputeZoom computeZoom;
+
+    private GestureDetector gestureDetector;
+
+    private ScaleGestureDetector scaleGestureDetector;
 
     private ChartListener chartListener;
 
-    public static final int TOUCH_NONE = -1;
-    public static final int TOUCH_SCROLL = 0;
-    public static final int TOUCH_ZOOM = 1;
-
-    public static final int TOUCH_SCALE_SCROLL = 0;
-
-    private int touchType = -1;
-    private int touchState = TOUCH_NONE;
+    private ChartCompute chartCompute;
 
     private boolean enable = true;
-
-    private GestureDetector gestureDetector;
-    private ViewParent viewParent;
 
     public ChartTouchHandler(Context context, ChartListener chartListener) {
 
         this.chartListener = chartListener;
 
-        computeScrollHandler = new ComputeScrollHandler(context);
+        computeScroll = new ComputeScroll(context);
 
-        computeZoomHandler = new ComputeZoomHandler(context, chartListener.getOrientation());
+        computeZoom = new ComputeZoom();
 
         gestureDetector = new GestureDetector(context, new ChartGestureDetector());
+
+        scaleGestureDetector = new ScaleGestureDetector(context, new ChartScaleGestureListener());
+
+        chartCompute = chartListener.getChartCompute();
     }
 
-    private ChartCompute chartCompute;
+    public boolean onTouchEvent(MotionEvent event) {
 
-    public boolean onTouchEvent(MotionEvent event, final ChartCompute chartCompute) {
-        this.chartCompute = chartCompute;
         if(enable) {
+            boolean isInvalidate = scaleGestureDetector.onTouchEvent(event) && gestureDetector.onTouchEvent(event);
 
-            boolean isInvalidate = computeZoomHandler.startZoom(event, chartCompute);
-
-            gestureDetector.onTouchEvent(event);
-            //if(!computeZoomHandler.isScale())
-
-
-            if(isInvalidate) {
+            if(isInvalidate)
                 ViewCompat.postInvalidateOnAnimation(chartListener.getView());
-            }
+
+            return true;
         }
 
-        return true;
-    }
-
-    public Scroller getScroller() {
-        return computeScrollHandler.getScroller();
-    }
-
-    public int getTouchState() {
-        return touchState;
+        return false;
     }
 
     public void setEnable(boolean enable) {
@@ -83,18 +71,49 @@ public class ChartTouchHandler {
         return enable;
     }
 
+    public boolean compueScroll() {
+        return enable && computeScroll.computeFling(chartCompute);
+    }
+
+    public class ChartScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+
+            float scale = computeZoom.getScale(detector.getCurrentSpan());
+
+            switch (orientation) {
+                case HORIZONTAL_VERTICAL:
+                    computeZoom.computeZoom(scale, detector.getFocusX(), detector.getFocusY(), chartCompute);
+                    break;
+                case HORIZONTAL:
+                    computeZoom.computeHorizontalZoom(scale, detector.getFocusX(), detector.getFocusY(), chartCompute);
+                    break;
+                case VERTICAL:
+                    computeZoom.computeVerticalZoom(scale, detector.getFocusX(), detector.getFocusY(), chartCompute);
+                    break;
+
+            }
+
+            return true;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+
+            computeZoom.setLastSpan(detector.getCurrentSpan());
+
+            return true;
+        }
+
+    }
+
     public class ChartGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onDown(MotionEvent e) {
 
-            Log.d("onDown", "onDown");
-
-            touchState = 0;
-
-            computeScrollHandler.stopForce();
-            computeScrollHandler.setDownPosition(e.getX(), e.getY());
-            computeScrollHandler.setPreviousOffest(e.getX(), e.getY(), chartCompute);
+            computeScroll.stopAnimation();
 
             return true;
         }
@@ -102,10 +121,7 @@ public class ChartTouchHandler {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
-            Log.d("onScroll", "onScroll");
-
-            computeScrollHandler.startScroll((int) e2.getX(), (int) e2.getY(), distanceX, distanceY, chartCompute);
-            computeScrollHandler.setDownPosition(e2.getX(), e2.getY());
+            computeScroll.startScroll(distanceX, distanceY, chartCompute);
 
             return true;
         }
@@ -113,13 +129,11 @@ public class ChartTouchHandler {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
-            Log.d("onFling", "onFling");
-
-            touchState = -1;
-            computeScrollHandler.stopForce();
-            computeScrollHandler.startFling((int) velocityX, (int) velocityY, chartCompute);
+            computeScroll.stopAnimation();
+            computeScroll.startFling((int) velocityX, (int) velocityY, chartCompute);
 
             return true;
         }
+
     }
 }

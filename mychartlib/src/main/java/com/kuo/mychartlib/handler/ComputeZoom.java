@@ -1,10 +1,7 @@
 package com.kuo.mychartlib.handler;
 
-import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 
 import com.kuo.mychartlib.presenter.ChartCompute;
 
@@ -12,34 +9,13 @@ import com.kuo.mychartlib.presenter.ChartCompute;
  * Created by Kuo on 2016/4/1.
  */
 
-public class ComputeZoomHandler {
-
-    public static final int HORIZONTAL_VERTICAL = 0;
-    public static final int HORIZONTAL = 1;
-    public static final int VERTICAL = 2;
-
-    private int orientation;
-
-    private ScaleGestureDetector scaleGestureDetector;
-    private ChartCompute chartCompute;
+public class ComputeZoom {
 
     private float lastSpan;
 
-    private boolean isScale = false;
-
     private PointF viewfocus = new PointF();
 
-    public ComputeZoomHandler(Context context, int orientation) {
-        this.orientation = orientation;
-        scaleGestureDetector = new ScaleGestureDetector(context, new ChartScaleGestureListener());
-    }
-
-    protected boolean startZoom(MotionEvent event, ChartCompute chartCompute) {
-        this.chartCompute = chartCompute;
-        return scaleGestureDetector.onTouchEvent(event);
-    }
-
-    protected void computeZoom(float scale, float focusX, float focusY) {
+    protected void computeZoom(float scale, float focusX, float focusY, ChartCompute chartCompute) {
 
         float newWidth = scale * chartCompute.getCurViewport().width();
 
@@ -58,10 +34,10 @@ public class ComputeZoomHandler {
 
         float bottom = top + newHeight;
 
-        setCurViewport(left, top, right, bottom);
+        setCurViewport(left, top, right, bottom, chartCompute);
     }
 
-    protected void computeHorizontalZoom(float scale, float focusX, float focusY) {
+    protected void computeHorizontalZoom(float scale, float focusX, float focusY, ChartCompute chartCompute) {
 
         float newWidth = scale * chartCompute.getCurViewport().width();
 
@@ -74,10 +50,10 @@ public class ComputeZoomHandler {
         float right = left + newWidth;
         float bottom = chartCompute.getCurViewport().bottom;
 
-        setCurViewport(left, top, right, bottom);
+        setCurViewport(left, top, right, bottom, chartCompute);
     }
 
-    protected void computeVerticalZoom(float scale, float focusX, float focusY) {
+    protected void computeVerticalZoom(float scale, float focusX, float focusY, ChartCompute chartCompute) {
 
         float newHeight = scale * chartCompute.getCurViewport().height();
 
@@ -93,10 +69,10 @@ public class ComputeZoomHandler {
         float bottom = top + newHeight;
 
 
-        setCurViewport(left, top, right, bottom);
+        setCurViewport(left, top, right, bottom, chartCompute);
     }
 
-    private void setCurViewport(float left, float top, float right, float bottom) {
+    private void setCurViewport(float left, float top, float right, float bottom, ChartCompute chartCompute) {
 
         if (right - left < chartCompute.getMinViewport().width()) {
 
@@ -153,56 +129,19 @@ public class ComputeZoomHandler {
         return true;
     }
 
-    public boolean isScale() {
-        return isScale;
+    public void setLastSpan(float lastSpan) {
+        this.lastSpan = lastSpan;
     }
 
-    public class ChartScaleGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
+    public float getScale(float currSpan) {
 
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
+        float scale = 2.0f - lastSpan / currSpan;
 
-            //float scale = detector.getScaleFactor();;
+        if(Float.isInfinite(scale))
+            scale = 1;
 
-            float scale = 2.0f - lastSpan / detector.getCurrentSpan();
+        lastSpan = currSpan;
 
-            if(Float.isInfinite(scale)) {
-                 scale = 1;
-            }
-
-            switch (orientation) {
-                case HORIZONTAL_VERTICAL:
-                    computeZoom(scale, detector.getFocusX(), detector.getFocusY());
-                    break;
-                case HORIZONTAL:
-                    if(detector.getCurrentSpanX() > detector.getCurrentSpanY())
-                        computeHorizontalZoom(scale, detector.getFocusX(), detector.getFocusY());
-                    break;
-                case VERTICAL:
-                    computeVerticalZoom(scale, detector.getFocusX(), detector.getFocusY());
-                    break;
-
-            }
-
-            lastSpan = detector.getCurrentSpan();
-
-            return true;
-        }
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-
-            isScale = true;
-            lastSpan = detector.getCurrentSpan();
-
-            return true;
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            isScale = false;
-        }
-
+        return scale;
     }
-
 }

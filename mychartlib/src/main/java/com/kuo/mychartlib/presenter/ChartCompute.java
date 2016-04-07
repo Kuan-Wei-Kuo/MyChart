@@ -1,10 +1,6 @@
 package com.kuo.mychartlib.presenter;
 
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.view.MotionEvent;
-
-import com.kuo.mychartlib.handler.ComputeZoomHandler;
+import com.kuo.mychartlib.handler.ChartTouchHandler;
 import com.kuo.mychartlib.model.Viewport;
 
 /*
@@ -18,6 +14,7 @@ public class ChartCompute {
     protected float curMargin = 0f;
 
     protected int padding = 20;
+
     protected int maxTextWidth;
     protected int maxTextHeight;
 
@@ -87,26 +84,49 @@ public class ChartCompute {
         this.curMargin = curMargin;
     }
 
+    public void containsCurrentViewport(float left, float top, float right, float bottom) {
+
+        float curWidth = curViewport.width();
+        float curHeight = curViewport.height();
+
+        if (left > minViewport.left) {
+            left = minViewport.left;
+            right = left + curWidth;
+        } else if (right < minViewport.right) {
+            right = minViewport.right;
+            left = right - curWidth;
+        }
+
+        if (top > minViewport.top) {
+            top = minViewport.top;
+            bottom = top + curHeight;
+        } else if (bottom < minViewport.bottom) {
+            bottom = minViewport.bottom;
+            top = bottom - curHeight;
+        }
+
+        curViewport.set(left, top, right, bottom);
+    }
+
     public void setCurViewport(float left, float top, float right, float bottom) {
 
-        if(left > minViewport.left) {
+        float curW = curViewport.width();
+        float curH = curViewport.height();
+
+        if (left > minViewport.left) {
             left = minViewport.left;
-            right = curViewport.right;
-        }
-
-        if(right < minViewport.right) {
-            left = curViewport.left;
+            right = left + curW;
+        } else if (right < minViewport.right) {
             right = minViewport.right;
+            left = right - curW;
         }
 
-        if(top > minViewport.top) {
+        if (top > minViewport.top) {
             top = minViewport.top;
-            bottom = curViewport.bottom;
-        }
-
-        if(bottom < minViewport.bottom) {
-            top = curViewport.top;
+            bottom = top + curH;
+        } else if (bottom < minViewport.bottom) {
             bottom = minViewport.bottom;
+            top = bottom - curH;
         }
 
         curViewport.left = left;
@@ -116,9 +136,7 @@ public class ChartCompute {
 
     }
 
-
-
-    protected int orientation = ComputeZoomHandler.HORIZONTAL_VERTICAL;
+    protected int orientation = ChartTouchHandler.HORIZONTAL_VERTICAL;
 
     public void setOrientation(int orientation) {
         this.orientation = orientation;
@@ -127,6 +145,5 @@ public class ChartCompute {
     public int getOrientation() {
         return orientation;
     }
-
 
 }

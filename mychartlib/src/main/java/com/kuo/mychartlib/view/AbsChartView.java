@@ -4,10 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Scroller;
 
 import com.kuo.mychartlib.handler.ChartTouchHandler;
 import com.kuo.mychartlib.listener.ChartListener;
@@ -55,7 +53,7 @@ public abstract class AbsChartView extends View implements ChartListener {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return chartTouchHandler.onTouchEvent(event, chartCompute);
+        return chartTouchHandler.onTouchEvent(event);
     }
 
     @Override
@@ -113,25 +111,9 @@ public abstract class AbsChartView extends View implements ChartListener {
     @Override
     public void computeScroll() {
 
-        Scroller mScroller = chartTouchHandler.getScroller();
-
-        if (mScroller.computeScrollOffset()) {
-
-            float left, right, top, bottom;
-
-            if(chartTouchHandler.getTouchState() != ChartTouchHandler.TOUCH_SCROLL) {
-            }
-
-
-            left = mScroller.getCurrX();
-            top = mScroller.getCurrY();
-            right = left + chartCompute.getCurViewport().width();
-            bottom = top + chartCompute.getCurViewport().height();
-
-            chartCompute.setCurViewport(left, top, right, bottom);
-
+        if (chartTouchHandler.compueScroll())
             ViewCompat.postInvalidateOnAnimation(this);
-        }
+
         super.computeScroll();
     }
 }
