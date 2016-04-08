@@ -9,19 +9,28 @@ import android.view.View;
 
 import com.kuo.mychartlib.handler.ChartTouchHandler;
 import com.kuo.mychartlib.listener.ChartListener;
+import com.kuo.mychartlib.model.ChartData;
+import com.kuo.mychartlib.model.ChartGenericArrayList;
+import com.kuo.mychartlib.model.SelectData;
 import com.kuo.mychartlib.presenter.ChartCompute;
 import com.kuo.mychartlib.renderer.AbsChartRenderer;
+
+import java.util.ArrayList;
 
 /*
  * Created by Kuo on 2016/3/7.
  */
 public abstract class AbsChartView extends View implements ChartListener {
 
-    protected ChartTouchHandler chartTouchHandler;
+    private ChartTouchHandler chartTouchHandler;
 
-    protected ChartCompute chartCompute;
+    private ChartCompute chartCompute;
 
-    protected AbsChartRenderer absChartRenderer;
+    private AbsChartRenderer absChartRenderer;
+
+    private ChartGenericArrayList<ArrayList<? extends ChartData>> chartData = new ChartGenericArrayList<>();
+
+    private SelectData selectData;
 
     public AbsChartView(Context context) {
         this(context, null, 0);
@@ -36,6 +45,11 @@ public abstract class AbsChartView extends View implements ChartListener {
 
         chartCompute = new ChartCompute();
         chartTouchHandler = new ChartTouchHandler(getContext(), this);
+
+        //初始化避免錯誤
+        chartData.setChartData(new ArrayList<ChartData>());
+
+        selectData = new SelectData();
     }
 
     @Override
@@ -90,13 +104,21 @@ public abstract class AbsChartView extends View implements ChartListener {
     }
 
     @Override
-    public ChartCompute getChartCompute() {
-        return chartCompute;
+    public void setChartData(ArrayList<? extends ChartData> chartData) {
+        if(chartData == null)
+            this.chartData.setChartData(new ArrayList<ChartData>());
+        else
+            this.chartData.setChartData(chartData);
+    }
+
+    public void updateChart() {
+        absChartRenderer.prepareCompute();
+        invalidate();
     }
 
     @Override
-    public int getOrientation() {
-        return chartCompute.getOrientation();
+    public ChartCompute getChartCompute() {
+        return chartCompute;
     }
 
     @Override
@@ -105,13 +127,23 @@ public abstract class AbsChartView extends View implements ChartListener {
     }
 
     @Override
+    public int getOrientation() {
+        return chartCompute.getOrientation();
+    }
+
+    @Override
     public boolean isTouchEnable() {
         return chartTouchHandler.isEnable();
     }
 
-    public void updateChart() {
-        absChartRenderer.prepareCompute();
-        invalidate();
+    @Override
+    public ArrayList<? extends ChartData> getChartData() {
+        return chartData.getChartData();
+    }
+
+    @Override
+    public SelectData getSelectData() {
+        return selectData;
     }
 
 }

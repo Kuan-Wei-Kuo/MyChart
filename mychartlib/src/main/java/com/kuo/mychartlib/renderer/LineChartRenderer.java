@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 
-import com.kuo.mychartlib.listener.ChartGenericListener;
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.model.Viewport;
 import com.kuo.mychartlib.until.ChartRendererUntil;
@@ -17,8 +16,8 @@ import java.util.ArrayList;
  */
 public class LineChartRenderer extends AbsColumnBase {
 
-    public LineChartRenderer(Context context, ChartListener chartListener, ChartGenericListener chartGenericListener) {
-        super(context, chartListener, chartGenericListener);
+    public LineChartRenderer(Context context, ChartListener chartListener) {
+        super(context, chartListener);
     }
 
     @Override

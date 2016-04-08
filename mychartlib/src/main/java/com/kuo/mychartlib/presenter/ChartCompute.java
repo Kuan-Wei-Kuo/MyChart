@@ -108,6 +108,10 @@ public class ChartCompute {
         curViewport.set(left, top, right, bottom);
     }
 
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+    }
+
     public void setCurViewport(float left, float top, float right, float bottom) {
 
         float curW = curViewport.width();
@@ -137,10 +141,6 @@ public class ChartCompute {
     }
 
     protected int orientation = ChartTouchHandler.HORIZONTAL_VERTICAL;
-
-    public void setOrientation(int orientation) {
-        this.orientation = orientation;
-    }
 
     public int getOrientation() {
         return orientation;

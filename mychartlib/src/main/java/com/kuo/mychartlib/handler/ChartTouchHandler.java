@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.kuo.mychartlib.listener.ChartListener;
+import com.kuo.mychartlib.model.SelectData;
 import com.kuo.mychartlib.presenter.ChartCompute;
 
 /*
@@ -24,6 +25,8 @@ public class ChartTouchHandler {
 
     private ComputeZoom computeZoom;
 
+    private ComputeSelect computeSelect;
+
     private GestureDetector gestureDetector;
 
     private ScaleGestureDetector scaleGestureDetector;
@@ -31,6 +34,8 @@ public class ChartTouchHandler {
     private ChartListener chartListener;
 
     private ChartCompute chartCompute;
+
+    private SelectData selectData;
 
     private boolean enable = true;
 
@@ -46,9 +51,13 @@ public class ChartTouchHandler {
 
         scaleGestureDetector = new ScaleGestureDetector(context, new ChartScaleGestureListener());
 
+        computeSelect = new ComputeSelect();
+
         chartCompute = chartListener.getChartCompute();
 
         orientation = chartListener.getOrientation();
+
+        selectData = chartListener.getSelectData();
     }
 
     public void setEnable(boolean enable) {
@@ -58,9 +67,12 @@ public class ChartTouchHandler {
     public boolean onTouchEvent(MotionEvent event) {
 
         if(enable) {
+
             boolean isInvalidate = scaleGestureDetector.onTouchEvent(event) && gestureDetector.onTouchEvent(event);
 
-            if(isInvalidate)
+            boolean canSelect = computeSelect.onTouchEvent(event, chartListener.getSelectData());
+
+            if(isInvalidate || canSelect)
                 ViewCompat.postInvalidateOnAnimation(chartListener.getView());
 
             return true;

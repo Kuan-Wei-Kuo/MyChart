@@ -3,8 +3,7 @@ package com.kuo.mychartlib.view;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.kuo.mychartlib.listener.ChartGenericListener;
-import com.kuo.mychartlib.model.ChartGenericArrayList;
+import com.kuo.mychartlib.model.ChartData;
 import com.kuo.mychartlib.model.ColumnData;
 import com.kuo.mychartlib.renderer.AbsChartRenderer;
 import com.kuo.mychartlib.renderer.ColumnChartRenderer;
@@ -14,10 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by Kuo on 2016/3/22.
  */
-public class ColumnChartView extends AbsChartView implements ChartGenericListener{
-
-    protected ArrayList<ColumnData> columnData = new ArrayList<>();
-    protected ChartGenericArrayList<ArrayList<ColumnData>> chartData = new ChartGenericArrayList<>();
+public class ColumnChartView extends AbsChartView {
 
     public ColumnChartView(Context context) {
         this(context, null, 0);
@@ -29,13 +25,7 @@ public class ColumnChartView extends AbsChartView implements ChartGenericListene
 
     public ColumnChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        chartData.setChartData(new ArrayList<ColumnData>());
-        setAbsChartRenderer(new ColumnChartRenderer(getContext(), this, this));
-    }
-
-    @Override
-    public ArrayList<ColumnData> getChartData() {
-        return chartData.getChartData();
+        setAbsChartRenderer(new ColumnChartRenderer(getContext(), this));
     }
 
     @Override
@@ -44,7 +34,11 @@ public class ColumnChartView extends AbsChartView implements ChartGenericListene
     }
 
     public void setColumnData(ArrayList<ColumnData> columnData) {
-        this.chartData.setChartData(columnData);
+        setChartData(columnData);
+    }
+
+    public ArrayList<? extends ChartData> getColumnData() {
+        return getChartData();
     }
 
 }

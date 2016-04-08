@@ -3,9 +3,7 @@ package com.kuo.mychartlib.view;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.kuo.mychartlib.listener.ChartGenericListener;
 import com.kuo.mychartlib.model.ChartData;
-import com.kuo.mychartlib.model.ChartGenericArrayList;
 import com.kuo.mychartlib.model.LineData;
 import com.kuo.mychartlib.renderer.AbsChartRenderer;
 import com.kuo.mychartlib.renderer.LineChartRenderer;
@@ -15,9 +13,7 @@ import java.util.ArrayList;
 /*
  * Created by Kuo on 2016/3/9.
  */
-public class LineChartView extends AbsChartView implements ChartGenericListener {
-
-    ChartGenericArrayList<ArrayList<LineData>> lineData = new ChartGenericArrayList<>();
+public class LineChartView extends AbsChartView {
 
     public LineChartView(Context context) {
         this(context, null, 0);
@@ -29,8 +25,7 @@ public class LineChartView extends AbsChartView implements ChartGenericListener 
 
     public LineChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        lineData.setChartData(new ArrayList<LineData>());
-        setAbsChartRenderer(new LineChartRenderer(getContext(), this, this));
+        setAbsChartRenderer(new LineChartRenderer(getContext(), this));
     }
 
     @Override
@@ -38,12 +33,11 @@ public class LineChartView extends AbsChartView implements ChartGenericListener 
         super.setAbsChartRenderer(absChartRenderer);
     }
 
-    @Override
-    public ArrayList<? extends ChartData> getChartData() {
-        return lineData.getChartData();
+    public void setLineData(ArrayList<LineData> lineData) {
+        setChartData(lineData);
     }
 
-    public void setLineData(ArrayList<LineData> lineData) {
-        this.lineData.setChartData(lineData);
+    public ArrayList<? extends ChartData> getLineData() {
+        return getLineData();
     }
 }

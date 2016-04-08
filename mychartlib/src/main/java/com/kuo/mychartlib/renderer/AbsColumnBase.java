@@ -6,7 +6,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import com.kuo.mychartlib.listener.ChartGenericListener;
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.model.AxisData;
 import com.kuo.mychartlib.model.ChartData;
@@ -23,8 +22,6 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
     protected ChartListener chartListener;
 
-    protected ChartGenericListener chartGenericListener;
-
     private ArrayList<RectF> rectFs = new ArrayList<>();
 
     private ArrayList<AxisData> axisDatas = new ArrayList<>();
@@ -33,11 +30,10 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
     private float columnWidth = 0f;
 
-    public AbsColumnBase(Context context, ChartListener chartListener, ChartGenericListener chartGenericListener) {
+    public AbsColumnBase(Context context, ChartListener chartListener) {
         super(context);
 
         this.chartListener = chartListener;
-        this.chartGenericListener = chartGenericListener;
     }
 
     @Override
@@ -88,7 +84,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
     private void drawValues(Canvas canvas) {
 
         ChartCompute chartCompute = chartListener.getChartCompute();
-        ArrayList<? extends ChartData> chartDatas = chartGenericListener.getChartData();
+        ArrayList<? extends ChartData> chartDatas = chartListener.getChartData();
         Viewport minViewport = chartCompute.getMinViewport();
 
         int count = 0;
@@ -215,7 +211,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
     private void prepareChartCompute() {
 
         ChartCompute chartCompute = chartListener.getChartCompute();
-        ArrayList<? extends ChartData> chartDatas = chartGenericListener.getChartData();
+        ArrayList<? extends ChartData> chartDatas = chartListener.getChartData();
 
         int maxTextWidth = 0;
 
@@ -270,7 +266,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
         ChartCompute chartCompute = chartListener.getChartCompute();
         Viewport minViewport = chartCompute.getMinViewport();
         Viewport curViewport = chartCompute.getCurViewport();
-        ArrayList<? extends ChartData> chartDatas = chartGenericListener.getChartData();
+        ArrayList<? extends ChartData> chartDatas = chartListener.getChartData();
 
         int count = 0;
 
@@ -316,7 +312,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
         ChartCompute chartCompute = chartListener.getChartCompute();
         Viewport minViewport = chartCompute.getMinViewport();
 
-        ArrayList<? extends ChartData> chartDatas = chartGenericListener.getChartData();
+        ArrayList<? extends ChartData> chartDatas = chartListener.getChartData();
 
         int count = 0;
 
@@ -347,7 +343,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
     }
 
     protected int getValueColor(int index) {
-        ArrayList<? extends ChartData> columnDatas = chartGenericListener.getChartData();
+        ArrayList<? extends ChartData> columnDatas = chartListener.getChartData();
         return columnDatas.get(index).getValueColor();
     }
 
