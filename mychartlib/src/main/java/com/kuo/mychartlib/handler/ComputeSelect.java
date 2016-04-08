@@ -1,5 +1,6 @@
 package com.kuo.mychartlib.handler;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.kuo.mychartlib.model.SelectData;
@@ -22,13 +23,22 @@ public class ComputeSelect {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
+
                 lastX = e.getX();
                 lastY = e.getY();
+
+                selectData.setSelectPoint(lastX, lastY);
+
                 break;
             case MotionEvent.ACTION_UP:
 
                 if(ChartRendererUntil.getDistance(lastX, lastY, e.getX(), e.getY()) < 10) {
-                    selectData.setSelectPoint(e.getX(), e.getY());
+
+                    if(selectData.getLastPosition() != selectData.getPosition())
+                        selectData.setSelectPoint(e.getX(), e.getY());
+                    else
+                        selectData.resetSelect();
+
                     canSelect = true;
                 }
 

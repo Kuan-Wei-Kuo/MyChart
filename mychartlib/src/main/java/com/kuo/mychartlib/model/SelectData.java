@@ -13,9 +13,9 @@ public class SelectData {
 
     PointF selectPoint;
 
-    RectF rectF = new RectF();
-
     int position = -1;
+
+    int lastPosition = -2;
 
     public SelectData() {
         selectPoint = new PointF(0, 0);
@@ -39,17 +39,43 @@ public class SelectData {
 
     public void setPosition(int position) {
 
-        Log.d("this", this.position +"");
-        Log.d("po", position +"");
-
-        if(this.position == position) {
-            this.position = -1;
-            selectPoint.set(0, 0);
-        } else
+        if(position == this.position) {
+            lastPosition = this.position;
+        } else {
             this.position = position;
+        }
+
+    }
+
+    public boolean computeNowPosition() {
+
+        boolean canSelect;
+
+        //Log.d("po", position + "");
+        //Log.d("lpo", lastPosition + "");
+
+        if(lastPosition == position) {
+            canSelect = false;
+            resetSelect();
+        } else {
+            canSelect = true;
+        }
+
+        return canSelect;
     }
 
     public int getPosition() {
         return position;
     }
+
+    public int getLastPosition() {
+        return lastPosition;
+    }
+
+
+    public void resetSelect() {
+        selectPoint.set(0, 0);
+        position = -1;
+    }
+
 }
