@@ -114,6 +114,10 @@ public class ComputeZoom {
         chartCompute.getCurViewport().bottom = Math.max(chartCompute.getMinViewport().bottom, bottom);
     }
 
+    public void setLastSpan(float lastSpan) {
+        this.lastSpan = lastSpan;
+    }
+
     private boolean hitTest(float x, float y, PointF dest, RectF contentRectF, RectF currentViewport) {
         if (!contentRectF.contains((int) x, (int) y)) {
             return false;
@@ -129,10 +133,6 @@ public class ComputeZoom {
         return true;
     }
 
-    public void setLastSpan(float lastSpan) {
-        this.lastSpan = lastSpan;
-    }
-
     public float getScale(float currSpan) {
 
         float scale = 2.0f - lastSpan / currSpan;
@@ -144,4 +144,5 @@ public class ComputeZoom {
 
         return scale;
     }
+
 }

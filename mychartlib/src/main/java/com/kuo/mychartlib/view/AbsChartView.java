@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.kuo.mychartlib.handler.ChartTouchHandler;
 import com.kuo.mychartlib.listener.ChartListener;
-import com.kuo.mychartlib.model.Viewport;
 import com.kuo.mychartlib.presenter.ChartCompute;
 import com.kuo.mychartlib.renderer.AbsChartRenderer;
 
@@ -18,30 +17,25 @@ import com.kuo.mychartlib.renderer.AbsChartRenderer;
  */
 public abstract class AbsChartView extends View implements ChartListener {
 
-    protected Viewport chartViewport;
     protected ChartTouchHandler chartTouchHandler;
+
     protected ChartCompute chartCompute;
 
     protected AbsChartRenderer absChartRenderer;
 
     public AbsChartView(Context context) {
         this(context, null, 0);
-
     }
 
     public AbsChartView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
-
     }
 
     public AbsChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         chartCompute = new ChartCompute();
-    }
-
-    public void setTouchEnable(boolean enable) {
-        chartTouchHandler.setEnable(enable);
+        chartTouchHandler = new ChartTouchHandler(getContext(), this);
     }
 
     @Override
@@ -57,11 +51,6 @@ public abstract class AbsChartView extends View implements ChartListener {
     }
 
     @Override
-    public void setAbsChartRenderer(AbsChartRenderer absChartRenderer) {
-        this.absChartRenderer = absChartRenderer;
-    }
-
-    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -70,8 +59,6 @@ public abstract class AbsChartView extends View implements ChartListener {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        chartTouchHandler = new ChartTouchHandler(getContext(), this);
-
         chartCompute.setChartWidth(w);
         chartCompute.setChartHeight(h);
 
@@ -79,23 +66,32 @@ public abstract class AbsChartView extends View implements ChartListener {
     }
 
     @Override
-    public ChartCompute getChartCompute() {
-        return chartCompute;
+    public void computeScroll() {
+
+        if (chartTouchHandler.compueScroll())
+            ViewCompat.postInvalidateOnAnimation(this);
+
+        super.computeScroll();
     }
 
     @Override
-    public void setChartCompute(ChartCompute chartCompute) {
-        this.chartCompute = chartCompute;
-    }
-
-    public void upadateChart() {
-        absChartRenderer.prepareCompute();
-        invalidate();
+    public void setAbsChartRenderer(AbsChartRenderer absChartRenderer) {
+        this.absChartRenderer = absChartRenderer;
     }
 
     @Override
     public void setOrientation(int orientation) {
         chartCompute.setOrientation(orientation);
+    }
+
+    @Override
+    public void setTouchEnable(boolean enable) {
+        chartTouchHandler.setEnable(enable);
+    }
+
+    @Override
+    public ChartCompute getChartCompute() {
+        return chartCompute;
     }
 
     @Override
@@ -109,11 +105,13 @@ public abstract class AbsChartView extends View implements ChartListener {
     }
 
     @Override
-    public void computeScroll() {
-
-        if (chartTouchHandler.compueScroll())
-            ViewCompat.postInvalidateOnAnimation(this);
-
-        super.computeScroll();
+    public boolean isTouchEnable() {
+        return chartTouchHandler.isEnable();
     }
+
+    public void updateChart() {
+        absChartRenderer.prepareCompute();
+        invalidate();
+    }
+
 }

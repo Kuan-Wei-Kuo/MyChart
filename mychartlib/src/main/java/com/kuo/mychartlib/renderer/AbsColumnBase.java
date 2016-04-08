@@ -16,15 +16,18 @@ import com.kuo.mychartlib.until.ChartRendererUntil;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by Kuo on 2016/3/30.
  */
 public abstract class AbsColumnBase extends AbsChartRenderer {
 
     protected ChartListener chartListener;
+
     protected ChartGenericListener chartGenericListener;
 
     private ArrayList<RectF> rectFs = new ArrayList<>();
+
+    private ArrayList<AxisData> axisDatas = new ArrayList<>();
 
     private PointF pointF = new PointF(0, 0);
 
@@ -79,20 +82,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
         Viewport minViewport = chartListener.getChartCompute().getMinViewport();
 
-        float x = rectF.right == minViewport.right ? rectF.left : rectF.right - columnWidth;
-
-        return x;
-    }
-
-    public float getRawY(RectF rectF, float value) {
-
-        ChartCompute chartCompute = chartListener.getChartCompute();
-        Viewport curViewport = chartCompute.getCurViewport();
-        Viewport minViewport = chartCompute.getMinViewport();
-
-        float y = rectF.bottom == minViewport.bottom ? rectF.top : curViewport.bottom - curViewport.height() / (chartCompute.getMaxValue() + 20) * value;
-
-        return y;
+        return rectF.right == minViewport.right ? rectF.left : rectF.right - columnWidth;
     }
 
     private void drawValues(Canvas canvas) {
@@ -268,7 +258,6 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
     }
 
-    private float columnMargin;
     /**
      * Compute New CurrentRect
      *
@@ -285,7 +274,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
         int count = 0;
 
-        columnMargin = (curViewport.width() - chartCompute.getPadding()) / chartDatas.size() * 0.25f;
+        float columnMargin = (curViewport.width() - chartCompute.getPadding()) / chartDatas.size() * 0.25f;
 
         columnWidth = (curViewport.width() - chartCompute.getPadding()) / chartDatas.size() * 0.75f;
 
@@ -319,8 +308,6 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
             prepareAxisX();
         }
     }
-
-    private ArrayList<AxisData> axisDatas = new ArrayList<>();
 
     private void prepareAxisX() {
 

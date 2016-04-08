@@ -12,13 +12,15 @@ public interface ChartListener {
 
     View getView();
 
-    void setAbsChartRenderer(AbsChartRenderer absChartRenderer);
-
-    void setChartCompute(ChartCompute chartCompute);
-
     ChartCompute getChartCompute();
+
+    int getOrientation();
+
+    boolean isTouchEnable();
+
+    void setAbsChartRenderer(AbsChartRenderer absChartRenderer);
 
     void setOrientation(int orientation);
 
-    int getOrientation();
+    void setTouchEnable(boolean enable);
 }

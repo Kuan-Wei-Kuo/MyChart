@@ -95,7 +95,7 @@ public class ColumnFragment extends Fragment {
             }
 
             columnChartView.setColumnData(computeColumnData(size, maxValue));
-            columnChartView.upadateChart();
+            columnChartView.updateChart();
         }
 
         @Override

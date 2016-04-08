@@ -47,6 +47,12 @@ public class ChartTouchHandler {
         scaleGestureDetector = new ScaleGestureDetector(context, new ChartScaleGestureListener());
 
         chartCompute = chartListener.getChartCompute();
+
+        orientation = chartListener.getOrientation();
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -61,10 +67,6 @@ public class ChartTouchHandler {
         }
 
         return false;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     public boolean isEnable() {

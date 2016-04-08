@@ -92,7 +92,7 @@ public class LineFragment extends Fragment {
             }
 
             lineChartView.setLineData(computeLineData(size, maxValue));
-            lineChartView.upadateChart();
+            lineChartView.updateChart();
         }
 
         @Override
