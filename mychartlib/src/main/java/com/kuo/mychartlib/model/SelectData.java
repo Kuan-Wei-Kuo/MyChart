@@ -1,8 +1,6 @@
 package com.kuo.mychartlib.model;
 
 import android.graphics.PointF;
-import android.graphics.RectF;
-import android.util.Log;
 
 /*
  * Created by Kuo on 2016/4/8.
@@ -25,6 +23,21 @@ public class SelectData {
         selectPoint.set(x, y);
     }
 
+    public void setPosition(int position) {
+
+        if(position == this.position) {
+            lastPosition = this.position;
+        } else {
+            this.position = position;
+        }
+
+    }
+
+    public void resetSelect() {
+        selectPoint.set(0, 0);
+        position = -1;
+    }
+
     public boolean isSelect() {
         return isSelect;
     }
@@ -37,45 +50,12 @@ public class SelectData {
         return selectPoint.y;
     }
 
-    public void setPosition(int position) {
-
-        if(position == this.position) {
-            lastPosition = this.position;
-        } else {
-            this.position = position;
-        }
-
-    }
-
-    public boolean computeNowPosition() {
-
-        boolean canSelect;
-
-        //Log.d("po", position + "");
-        //Log.d("lpo", lastPosition + "");
-
-        if(lastPosition == position) {
-            canSelect = false;
-            resetSelect();
-        } else {
-            canSelect = true;
-        }
-
-        return canSelect;
-    }
-
     public int getPosition() {
         return position;
     }
 
     public int getLastPosition() {
         return lastPosition;
-    }
-
-
-    public void resetSelect() {
-        selectPoint.set(0, 0);
-        position = -1;
     }
 
 }

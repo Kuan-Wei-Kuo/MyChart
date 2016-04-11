@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.model.SelectData;
@@ -54,9 +53,6 @@ public class ColumnChartRenderer extends AbsColumnBase {
     private void selectRect(Canvas canvas) {
 
         SelectData selectData = chartListener.getSelectData();
-
-        Log.d("po", selectData.getPosition() + "");
-        Log.d("lpo", selectData.getLastPosition() + "");
 
         if(selectData.getPosition() != -1) {
 
