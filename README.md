@@ -27,3 +27,33 @@
 
 ###圓餅圖
 <img width="500" height="300" src="https://googledrive.com/host/0B5fOJF9g7N2SUE5SWmlkSmNDMGs"/>
+
+#How to Use
+>Set XML
+```xml
+<com.kuo.mychartlib.view.ColumnChartView
+        android:id="@+id/columnChartView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+```
+
+>Set Java
+```java
+private ArrayList<ColumnData> computeColumnData(int size, int maxValue) {
+
+        int[] colors = {ChartRendererUntil.CHART_GREEN, ChartRendererUntil.CHART_PINK, ChartRendererUntil.CHART_RED, ChartRendererUntil.CHART_YELLOW, ChartRendererUntil.CHART_BROWN, ChartRendererUntil.CHART_ORANGE, ChartRendererUntil.CHART_GREY, ChartRendererUntil.CHART_PURPLE};
+
+        ArrayList<ColumnData> test = new ArrayList<>();
+
+        Random random = new Random();
+
+        for(int i = 0 ; i < size ; i++) {
+            test.add(new ColumnData("Axis " + i, random.nextInt(maxValue), colors[random.nextInt(colors.length)]));
+        }
+
+        return test;
+}
+
+columnChartView = (ColumnChartView) rootView.findViewById(R.id.columnChartView);
+columnChartView.setColumnData(computeColumnData(size, maxValue));
+```
