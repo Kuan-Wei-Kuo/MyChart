@@ -29,7 +29,8 @@
 <img width="500" height="300" src="https://googledrive.com/host/0B5fOJF9g7N2SUE5SWmlkSmNDMGs"/>
 
 #How to Use
->Set XML
+
+##Set XML
 ```xml
 <com.kuo.mychartlib.view.ColumnChartView
         android:id="@+id/columnChartView"
@@ -37,9 +38,8 @@
         android:layout_height="match_parent"/>
 ```
 
->Set Java
+#S#et Java
 ```java
-
 private ArrayList<ColumnData> computeColumnData(int size, int maxValue) {
 
         int[] colors = {ChartRendererUntil.CHART_GREEN, ChartRendererUntil.CHART_PINK, 
@@ -62,5 +62,4 @@ private ArrayList<ColumnData> computeColumnData(int size, int maxValue) {
 
 columnChartView = (ColumnChartView) rootView.findViewById(R.id.columnChartView);
 columnChartView.setColumnData(computeColumnData(size, maxValue));
-
 ```
