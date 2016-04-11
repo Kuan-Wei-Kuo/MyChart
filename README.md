@@ -39,16 +39,22 @@
 
 >Set Java
 ```java
+
 private ArrayList<ColumnData> computeColumnData(int size, int maxValue) {
 
-        int[] colors = {ChartRendererUntil.CHART_GREEN, ChartRendererUntil.CHART_PINK, ChartRendererUntil.CHART_RED, ChartRendererUntil.CHART_YELLOW, ChartRendererUntil.CHART_BROWN, ChartRendererUntil.CHART_ORANGE, ChartRendererUntil.CHART_GREY, ChartRendererUntil.CHART_PURPLE};
+        int[] colors = {ChartRendererUntil.CHART_GREEN, ChartRendererUntil.CHART_PINK, 
+        ChartRendererUntil.CHART_RED, ChartRendererUntil.CHART_YELLOW,
+        ChartRendererUntil.CHART_BROWN, ChartRendererUntil.CHART_ORANGE, 
+        ChartRendererUntil.CHART_GREY, ChartRendererUntil.CHART_PURPLE};
 
         ArrayList<ColumnData> test = new ArrayList<>();
 
         Random random = new Random();
 
         for(int i = 0 ; i < size ; i++) {
-            test.add(new ColumnData("Axis " + i, random.nextInt(maxValue), colors[random.nextInt(colors.length)]));
+            test.add(new ColumnData("Axis " + i, 
+                random.nextInt(maxValue), 
+                colors[random.nextInt(colors.length)]));
         }
 
         return test;
@@ -56,4 +62,5 @@ private ArrayList<ColumnData> computeColumnData(int size, int maxValue) {
 
 columnChartView = (ColumnChartView) rootView.findViewById(R.id.columnChartView);
 columnChartView.setColumnData(computeColumnData(size, maxValue));
+
 ```
