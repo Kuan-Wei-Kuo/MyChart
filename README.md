@@ -38,7 +38,7 @@
         android:layout_height="match_parent"/>
 ```
 
-#S#et Java
+##Set Java
 ```java
 private ArrayList<ColumnData> computeColumnData(int size, int maxValue) {
 
