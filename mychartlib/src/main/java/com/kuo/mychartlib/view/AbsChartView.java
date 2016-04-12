@@ -113,6 +113,7 @@ public abstract class AbsChartView extends View implements ChartListener {
 
     public void updateChart() {
         absChartRenderer.prepareCompute();
+        selectData.resetSelect();
         invalidate();
     }
 

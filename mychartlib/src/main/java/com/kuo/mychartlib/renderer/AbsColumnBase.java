@@ -9,6 +9,7 @@ import android.graphics.RectF;
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.model.AxisData;
 import com.kuo.mychartlib.model.ChartData;
+import com.kuo.mychartlib.model.SelectData;
 import com.kuo.mychartlib.model.Viewport;
 import com.kuo.mychartlib.presenter.ChartCompute;
 import com.kuo.mychartlib.until.ChartRendererUntil;
@@ -274,6 +275,8 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
         columnWidth = (curViewport.width() - chartCompute.getPadding()) / chartDatas.size() * 0.75f;
 
+        SelectData selectData = chartListener.getSelectData();
+
         for(ChartData chartData : chartDatas) {
 
             float left = curViewport.left + count * (columnWidth + columnMargin) + chartCompute.getPadding();
@@ -293,7 +296,13 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
                 bottom = minViewport.bottom;
             }
 
-            rectFs.add(new Viewport(left, top, right, bottom));
+            Viewport viewport = new Viewport(left, top, right, bottom);
+
+            rectFs.add(viewport);
+
+            if(viewport.contains(selectData.getX(), selectData.getY())) {
+                selectData.setPosition(count);
+            }
 
             count++;
         }

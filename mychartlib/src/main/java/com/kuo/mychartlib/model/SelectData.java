@@ -25,21 +25,38 @@ public class SelectData {
 
     public void setPosition(int position) {
 
-        if(position == this.position) {
-            lastPosition = this.position;
-        } else {
-            this.position = position;
+        if(isSelect) {
+            if(this.position == position)
+                this.position = -1;
+            else
+                this.position = position;
         }
-
     }
 
     public void resetSelect() {
         selectPoint.set(0, 0);
         position = -1;
+        lastPosition = -2;
+        isSelect = false;
+    }
+
+    public void resetSelectPosition() {
+        position = -1;
+        //lastPosition = -2;
+        isSelect = false;
+    }
+
+
+    public void setLastPosition(int lastPosition) {
+        this.lastPosition = lastPosition;
     }
 
     public boolean isSelect() {
         return isSelect;
+    }
+
+    public void setSelect(boolean i) {
+        this.isSelect = i;
     }
 
     public float getX() {

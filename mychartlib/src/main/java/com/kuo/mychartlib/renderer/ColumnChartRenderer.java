@@ -25,9 +25,8 @@ public class ColumnChartRenderer extends AbsColumnBase {
     public void drawRects(Canvas canvas) {
 
         Viewport minViewport = chartListener.getChartCompute().getMinViewport();
-        ArrayList<RectF> rectFs = getRectFs();
 
-        SelectData selectData = chartListener.getSelectData();
+        ArrayList<RectF> rectFs = getRectFs();
 
         int count = 0;
 
@@ -40,21 +39,15 @@ public class ColumnChartRenderer extends AbsColumnBase {
             rectPaint.setColor(getValueColor(count));
             canvas.drawRect(rectF, rectPaint);
 
-            if(rectF.contains(selectData.getX(), selectData.getY())) {
-                selectData.setPosition(count);
-            }
-
             count++;
         }
 
-        selectRect(canvas);
+        drawSelect(canvas, chartListener.getSelectData());
     }
 
-    private void selectRect(Canvas canvas) {
+    public void drawSelect(Canvas canvas, SelectData selectData) {
 
-        SelectData selectData = chartListener.getSelectData();
-
-        if(selectData.getPosition() != -1) {
+        if(selectData.getPosition() != -1 && selectData.isSelect()) {
 
             ColorDrawable colorDrawable = new ColorDrawable(Color.BLACK);
             colorDrawable.setAlpha(100);
@@ -62,6 +55,7 @@ public class ColumnChartRenderer extends AbsColumnBase {
             rectPaint.setColor(colorDrawable.getColor());
             canvas.drawRect(getRectFs().get(selectData.getPosition()), rectPaint);
         }
+
     }
 
 }

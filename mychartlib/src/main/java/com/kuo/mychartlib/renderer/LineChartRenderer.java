@@ -2,10 +2,12 @@ package com.kuo.mychartlib.renderer;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 
 import com.kuo.mychartlib.listener.ChartListener;
+import com.kuo.mychartlib.model.SelectData;
 import com.kuo.mychartlib.model.Viewport;
 import com.kuo.mychartlib.until.ChartRendererUntil;
 
@@ -31,7 +33,9 @@ public class LineChartRenderer extends AbsColumnBase {
 
         int count = 0;
 
-        rectPaint.setStrokeWidth(30);
+        float raduis = getColumnWidth() / 5;
+
+        rectPaint.setStrokeWidth(ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 30));
 
         for(RectF rectF : rectFs) {
             if( minViewport.contains(getRawRectF(rectF).centerX(), rectF.top)) {
@@ -42,17 +46,19 @@ public class LineChartRenderer extends AbsColumnBase {
                 rectPaint.setColor(colorDrawable.getColor());
                 canvas.drawCircle(getRawRectF(rectF).centerX(),
                         rectF.top,
-                        ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 8), rectPaint);
+                        raduis, rectPaint);
 
                 colorDrawable.setAlpha(255);
                 rectPaint.setColor(colorDrawable.getColor());
                 canvas.drawCircle(getRawRectF(rectF).centerX(),
                         rectF.top,
-                        ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 8) * 0.7f, rectPaint);
+                        raduis * 0.7f, rectPaint);
 
             }
             count++;
         }
+
+        drawSelect(canvas, chartListener.getSelectData());
     }
 
 
@@ -188,4 +194,29 @@ public class LineChartRenderer extends AbsColumnBase {
         return rectF;
     }
 
+    public void drawSelect(Canvas canvas, SelectData selectData) {
+
+        if(selectData.getPosition() != -1) {
+
+            RectF selectRect = getRectFs().get(selectData.getPosition());
+
+            ColorDrawable colorDrawable = new ColorDrawable(getValueColor(selectData.getPosition()));
+            colorDrawable.setAlpha(150);
+
+            float raduis = getColumnWidth() / 4;
+
+            rectPaint.setColor(colorDrawable.getColor());
+            canvas.drawCircle(getRawRectF(selectRect).centerX(),
+                    selectRect.top,
+                    raduis, rectPaint);
+
+            colorDrawable.setAlpha(255);
+            rectPaint.setColor(colorDrawable.getColor());
+            canvas.drawCircle(getRawRectF(selectRect).centerX(),
+                    selectRect.top,
+                    raduis * 0.7f, rectPaint);
+
+        }
+
+    }
 }

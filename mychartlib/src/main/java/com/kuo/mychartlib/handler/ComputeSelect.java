@@ -27,17 +27,29 @@ public class ComputeSelect {
                 lastX = e.getX();
                 lastY = e.getY();
 
-                selectData.setSelectPoint(lastX, lastY);
+                //selectData.setSelectPoint(lastX, lastY);
+                selectData.setSelect(false);
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+
+                selectData.setSelectPoint(0, 0);
 
                 break;
             case MotionEvent.ACTION_UP:
 
                 if(ChartRendererUntil.getDistance(lastX, lastY, e.getX(), e.getY()) < 10) {
 
-                    if(selectData.getLastPosition() != selectData.getPosition())
-                        selectData.setSelectPoint(e.getX(), e.getY());
-                    else
-                        selectData.resetSelect();
+                    Log.d("getLastPosition", selectData.getLastPosition() + "");
+                    Log.d("getPosition", selectData.getPosition() + "");
+
+
+                    selectData.setSelectPoint(e.getX(), e.getY());
+                    selectData.setSelect(true);
+
+                    //if(selectData.getLastPosition() == selectData.getPosition()) {
+                      //  selectData.resetSelectPosition();
+                    //}
 
                     canSelect = true;
                 }
