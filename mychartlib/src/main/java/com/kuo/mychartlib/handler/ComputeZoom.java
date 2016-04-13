@@ -11,7 +11,7 @@ import com.kuo.mychartlib.presenter.ChartCompute;
 
 public class ComputeZoom {
 
-    private float lastSpan;
+    private float lastSpan, lastSpanX, lastSpanY;
 
     private PointF viewfocus = new PointF();
 
@@ -23,12 +23,12 @@ public class ComputeZoom {
 
         hitTest(focusX, focusY, viewfocus, chartCompute.getMinViewport(), chartCompute.getCurViewport());
 
-        float left = viewfocus.x - newWidth * (focusX - chartCompute.getMinViewport().left)
-                / chartCompute.getMinViewport().width();
+        float left = viewfocus.x - (focusX - chartCompute.getMinViewport().left)
+                * (newWidth / chartCompute.getMinViewport().width());
 
 
-        float top = viewfocus.y - newHeight * (chartCompute.getMinViewport().bottom - focusY)
-                / chartCompute.getMinViewport().height();
+        float top = viewfocus.y - (focusY - chartCompute.getMinViewport().top )
+                * (newHeight / chartCompute.getMinViewport().height());
 
         float right = left + newWidth;
 
@@ -125,11 +125,9 @@ public class ComputeZoom {
 
         dest.set(
                 currentViewport.left
-                        + currentViewport.width()
-                        * (x - contentRectF.left) / contentRectF.width(),
+                        + (x - contentRectF.left) * (currentViewport.width() / contentRectF.width()),
                 currentViewport.top
-                        + currentViewport.height()
-                        * (y - contentRectF.bottom) / -contentRectF.height());
+                        + (y - contentRectF.top) * (currentViewport.height() / contentRectF.height()));
         return true;
     }
 
