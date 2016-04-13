@@ -1,6 +1,5 @@
 package com.kuo.mychartlib.handler;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.kuo.mychartlib.model.SelectData;
@@ -39,10 +38,6 @@ public class ComputeSelect {
             case MotionEvent.ACTION_UP:
 
                 if(ChartRendererUntil.getDistance(lastX, lastY, e.getX(), e.getY()) < 10) {
-
-                    Log.d("getLastPosition", selectData.getLastPosition() + "");
-                    Log.d("getPosition", selectData.getPosition() + "");
-
 
                     selectData.setSelectPoint(e.getX(), e.getY());
                     selectData.setSelect(true);

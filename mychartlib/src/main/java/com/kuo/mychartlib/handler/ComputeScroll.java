@@ -17,25 +17,37 @@ public class ComputeScroll {
         mScroller = new Scroller(context);
     }
 
+    float OffsetX = 0;
+    float OffsetY = 0;
     /**
      * 這邊並不打算使用Scroller去做滑動的運算，直接算出當前位置可以避免一些問題。
      * */
     protected void startScroll(float distanceX, float distanceY, ChartCompute chartCompute) {
 
+        //為了多點觸碰的問題，我們滑動時使用distance來做主要方法。
+
         Viewport minViewport = chartCompute.getMinViewport();
         Viewport curViewport = chartCompute.getCurViewport();
 
-        //將我們當前View的高度與顯示的高度做除法運算，在乘上當前的X||Y位移的亮，來避免因為點擊而造成位移量亂改變
-        float OffsetX = -distanceX * chartCompute.getCurViewport().width() / chartCompute.getMinViewport().width();
-        float OffsetY = -distanceY * chartCompute.getCurViewport().height() / chartCompute.getMinViewport().height();
-
-        float left = chartCompute.getCurViewport().left + OffsetX;
-        float top = chartCompute.getCurViewport().top + OffsetY;
+        float left = curViewport.left - distanceX;
+        float top = curViewport.top - distanceY;
         float right  = left + curViewport.width();
         float bottom = top + curViewport.height();
 
-        boolean enableX = curViewport.left > minViewport.left || curViewport.right < minViewport.right;
-        boolean enableY = curViewport.top < minViewport.top || curViewport.bottom > minViewport.bottom;
+        boolean enableX = false;
+        boolean enableY = false;
+
+        if(curViewport.left < minViewport.left && distanceX <= 0) {
+            enableX = true;
+        } else if(curViewport.right > minViewport.right && distanceX >= 0) {
+            enableX = true;
+        }
+
+        if(curViewport.top < minViewport.top && distanceY <= 0) {
+            enableY = true;
+        } else if(curViewport.bottom > minViewport.bottom && distanceY >= 0) {
+            enableY = true;
+        }
 
         if(enableX || enableY)
             chartCompute.containsCurrentViewport(left, top, right, bottom);

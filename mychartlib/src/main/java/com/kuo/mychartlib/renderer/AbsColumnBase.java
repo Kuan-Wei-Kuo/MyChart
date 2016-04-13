@@ -300,7 +300,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
             rectFs.add(viewport);
 
-            if(viewport.contains(selectData.getX(), selectData.getY())) {
+            if(viewport.contains(selectData.getX(), selectData.getY()) && selectData.isSelect()) {
                 selectData.setPosition(count);
             }
 

@@ -47,7 +47,7 @@ public class ColumnChartRenderer extends AbsColumnBase {
 
     public void drawSelect(Canvas canvas, SelectData selectData) {
 
-        if(selectData.getPosition() != -1 && selectData.isSelect()) {
+        if(selectData.getPosition() != -1) {
 
             ColorDrawable colorDrawable = new ColorDrawable(Color.BLACK);
             colorDrawable.setAlpha(100);
