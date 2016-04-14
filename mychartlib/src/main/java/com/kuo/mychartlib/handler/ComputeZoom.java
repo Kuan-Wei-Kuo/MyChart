@@ -112,6 +112,7 @@ public class ComputeZoom {
         chartCompute.getCurViewport().top = Math.min(chartCompute.getMinViewport().top, top);
         chartCompute.getCurViewport().right = Math.max(chartCompute.getMinViewport().right, right);
         chartCompute.getCurViewport().bottom = Math.max(chartCompute.getMinViewport().bottom, bottom);
+
     }
 
     public void setLastSpan(float lastSpan) {

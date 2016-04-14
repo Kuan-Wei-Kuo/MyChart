@@ -28,13 +28,15 @@ public abstract class AbsChartRenderer {
 
         linePaint = new Paint();
         linePaint.setAntiAlias(true);
-        linePaint.setColor(ChartRendererUntil.CHART_GREY);
+        linePaint.setColor(ChartRendererUntil.CHART_GREY_500);
         linePaint.setStrokeWidth(ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 1));
 
         textPaint = new Paint();
         textPaint.setAntiAlias(true);
         textPaint.setColor(ChartRendererUntil.CHART_GREY);
+        textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTextSize(ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 15));
+
     }
 
     public Context getContext() {

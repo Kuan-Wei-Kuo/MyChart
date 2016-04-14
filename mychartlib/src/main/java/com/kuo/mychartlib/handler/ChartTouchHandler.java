@@ -94,7 +94,7 @@ public class ChartTouchHandler {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
 
-            float scale = computeZoom.getScale(detector.getCurrentSpan());
+            float scale = detector.getScaleFactor();
 
             switch (orientation) {
                 case HORIZONTAL_VERTICAL:
@@ -108,18 +108,8 @@ public class ChartTouchHandler {
                     break;
 
             }
-
             return true;
         }
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-
-            computeZoom.setLastSpan(detector.getCurrentSpan());
-
-            return true;
-        }
-
     }
 
     public class ChartGestureDetector extends GestureDetector.SimpleOnGestureListener {

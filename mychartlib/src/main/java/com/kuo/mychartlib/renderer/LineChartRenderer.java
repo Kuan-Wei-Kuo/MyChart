@@ -2,7 +2,6 @@ package com.kuo.mychartlib.renderer;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 
@@ -33,9 +32,7 @@ public class LineChartRenderer extends AbsColumnBase {
 
         int count = 0;
 
-        float raduis = getColumnWidth() / 5;
-
-        rectPaint.setStrokeWidth(ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 30));
+        float radius = ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 8);
 
         for(RectF rectF : rectFs) {
             if( minViewport.contains(getRawRectF(rectF).centerX(), rectF.top)) {
@@ -46,13 +43,13 @@ public class LineChartRenderer extends AbsColumnBase {
                 rectPaint.setColor(colorDrawable.getColor());
                 canvas.drawCircle(getRawRectF(rectF).centerX(),
                         rectF.top,
-                        raduis, rectPaint);
+                        radius, rectPaint);
 
                 colorDrawable.setAlpha(255);
                 rectPaint.setColor(colorDrawable.getColor());
                 canvas.drawCircle(getRawRectF(rectF).centerX(),
                         rectF.top,
-                        raduis * 0.7f, rectPaint);
+                        radius * 0.7f, rectPaint);
 
             }
             count++;
@@ -203,18 +200,18 @@ public class LineChartRenderer extends AbsColumnBase {
             ColorDrawable colorDrawable = new ColorDrawable(getValueColor(selectData.getPosition()));
             colorDrawable.setAlpha(150);
 
-            float raduis = getColumnWidth() / 4;
+            float radius = ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 12);
 
             rectPaint.setColor(colorDrawable.getColor());
             canvas.drawCircle(getRawRectF(selectRect).centerX(),
                     selectRect.top,
-                    raduis, rectPaint);
+                    radius, rectPaint);
 
             colorDrawable.setAlpha(255);
             rectPaint.setColor(colorDrawable.getColor());
             canvas.drawCircle(getRawRectF(selectRect).centerX(),
                     selectRect.top,
-                    raduis * 0.7f, rectPaint);
+                    radius * 0.7f, rectPaint);
 
         }
 
