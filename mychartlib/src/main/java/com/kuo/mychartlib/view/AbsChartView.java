@@ -22,7 +22,7 @@ import java.util.ArrayList;
  */
 public abstract class AbsChartView extends View implements ChartListener {
 
-    private ChartTouchHandler chartTouchHandler;
+    protected ChartTouchHandler chartTouchHandler;
 
     private ChartCompute chartCompute;
 
@@ -115,6 +115,11 @@ public abstract class AbsChartView extends View implements ChartListener {
         absChartRenderer.prepareCompute();
         selectData.resetSelect();
         invalidate();
+    }
+
+    @Override
+    public AbsChartRenderer getAbsChartRenderer() {
+        return absChartRenderer;
     }
 
     @Override

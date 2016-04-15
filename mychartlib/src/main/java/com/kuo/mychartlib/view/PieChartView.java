@@ -3,6 +3,7 @@ package com.kuo.mychartlib.view;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.kuo.mychartlib.handler.PieChartTouchHandler;
 import com.kuo.mychartlib.listener.PieDataListener;
 import com.kuo.mychartlib.model.PieData;
 import com.kuo.mychartlib.renderer.PieChartRenderer;
@@ -27,6 +28,7 @@ public class PieChartView extends AbsChartView implements PieDataListener {
     public PieChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        chartTouchHandler = new PieChartTouchHandler(context, this);
         setAbsChartRenderer(new PieChartRenderer(getContext(), this, this));
     }
 

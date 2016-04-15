@@ -21,23 +21,23 @@ public class ChartTouchHandler {
 
     private int orientation = HORIZONTAL_VERTICAL;
 
-    private ComputeScroll computeScroll;
+    protected ComputeScroll computeScroll;
 
-    private ComputeZoom computeZoom;
+    protected ComputeZoom computeZoom;
 
-    private ComputeSelect computeSelect;
+    protected ComputeSelect computeSelect;
 
-    private GestureDetector gestureDetector;
+    protected GestureDetector gestureDetector;
 
-    private ScaleGestureDetector scaleGestureDetector;
+    protected ScaleGestureDetector scaleGestureDetector;
 
-    private ChartListener chartListener;
+    protected ChartListener chartListener;
 
-    private ChartCompute chartCompute;
+    protected ChartCompute chartCompute;
 
-    private SelectData selectData;
+    protected SelectData selectData;
 
-    private boolean enable = true;
+    protected boolean enable = true;
 
     public ChartTouchHandler(Context context, ChartListener chartListener) {
 

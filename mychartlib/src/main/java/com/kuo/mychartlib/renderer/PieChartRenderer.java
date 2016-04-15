@@ -9,7 +9,6 @@ import android.graphics.RectF;
 
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.listener.PieDataListener;
-import com.kuo.mychartlib.model.ChartData;
 import com.kuo.mychartlib.model.PieData;
 import com.kuo.mychartlib.model.Viewport;
 import com.kuo.mychartlib.presenter.ChartCompute;
@@ -51,7 +50,7 @@ public class PieChartRenderer extends AbsChartRenderer {
     public void drawGraph(Canvas canvas) {
         drawCircleGraph(canvas);
         drawSeparationLines(canvas);
-        drawLables(canvas);
+        drawLabels(canvas);
         drawCenterCircle(canvas);
     }
 
@@ -71,6 +70,8 @@ public class PieChartRenderer extends AbsChartRenderer {
         }
     }
 
+    float angles = 0;
+
     public void drawCircleGraph(Canvas canvas) {
 
         ChartCompute chartCompute = chartListener.getChartCompute();
@@ -89,24 +90,39 @@ public class PieChartRenderer extends AbsChartRenderer {
 
         radius = pieSpec / 2;
 
-        float angles = 0;
-
         ArrayList<PieData> pieDatas = pieDataListener.getPieData();
 
         rectPaint.setStrokeWidth(ChartRendererUntil.dp2px(context.getResources().getDisplayMetrics().density, 5));
 
+        float sumAngles = angles;
+
         for(PieData pieData : pieDatas) {
             rectPaint.setColor(pieData.getValueColor());
 
-            canvas.drawArc(rectF, angles, pieData.getAngle(), true, rectPaint);
+            canvas.drawArc(chartCompute.getCurViewport(), sumAngles, pieData.getAngle(), true, rectPaint);
 
-            angles += pieData.getAngle();
+            sumAngles += pieData.getAngle();
         }
+    }
+
+    public void setAngles(float angles) {
+        this.angles += angles;
+
+        if(Math.abs(this.angles) > 360) {
+            this.angles = 0;
+        }
+    }
+
+    public float getAngles() {
+        return angles;
     }
 
     private void drawSeparationLines(Canvas canvas) {
 
-        float angles = 0;
+        float angles = this.angles;
+
+        linePaint.setStrokeWidth(5);
+        linePaint.setColor(ChartRendererUntil.CHART_WHITE);
 
         ArrayList<PieData> pieDatas = pieDataListener.getPieData();
 
@@ -118,7 +134,6 @@ public class PieChartRenderer extends AbsChartRenderer {
             float x1 = pointF.x * radius + rectF.centerX();
             float y1 = pointF.y * radius + rectF.centerY();
 
-            linePaint.setColor(ChartRendererUntil.CHART_WHITE);
             canvas.drawLine(rectF.centerX(), rectF.centerY(), x1, y1, linePaint);
 
             angles += pieData.getAngle();
@@ -126,12 +141,11 @@ public class PieChartRenderer extends AbsChartRenderer {
 
     }
 
-    private void drawLables(Canvas canvas) {
+    private void drawLabels(Canvas canvas) {
 
-        linePaint.setStrokeWidth(5);
         linePaint.setStyle(Paint.Style.FILL);
 
-        float angles = 0;
+        float angles = this.angles;
         float centerAngle;
 
         ArrayList<PieData> pieDatas = pieDataListener.getPieData();
@@ -155,12 +169,12 @@ public class PieChartRenderer extends AbsChartRenderer {
             canvas.drawLine(x1, y1, x2, y2, linePaint);
 
             rectPaint.setColor(pieDatas.get(i).getValueColor());
-            drawCircleLables(canvas, x2, y2, (int) pieDatas.get(i).getPersent() + "%");
+            drawCircleLabels(canvas, x2, y2, (int) pieDatas.get(i).getPersent() + "%");
         }
 
     }
 
-    private void drawCircleLables(Canvas canvas, float cx, float cy, String text) {
+    private void drawCircleLabels(Canvas canvas, float cx, float cy, String text) {
 
         Rect textBounds = new Rect();
         textPaint.getTextBounds(text, 0,
@@ -176,7 +190,7 @@ public class PieChartRenderer extends AbsChartRenderer {
         textPaint.setColor(ChartRendererUntil.CHART_WHITE);
 
         canvas.drawText(text,
-                cx - textWidth / 2,
+                cx,
                 cy + textHeight / 2, textPaint);
     }
 
@@ -222,16 +236,15 @@ public class PieChartRenderer extends AbsChartRenderer {
         chartCompute.setMaxTextWidth(maxTextWidth);
         chartCompute.setMaxTextHeight(maxTextHeight);
 
-        float width = chartCompute.getChartWidth() > chartCompute.getChartHeight() ? chartCompute.getChartHeight() : chartCompute.getChartWidth();
-        float height = width;
+        int pieSpec = chartCompute.getChartWidth() >= chartCompute.getChartHeight() ? chartCompute.getChartHeight() / 2 : chartCompute.getChartWidth() / 2;
 
-        float centerX = chartCompute.getChartWidth() / 2;
-        float centerY = chartCompute.getChartHeight() / 2;
+        int width = chartCompute.getChartWidth();
+        int height = chartCompute.getChartHeight();
 
-        float left = centerX - width / 2;
-        float top = centerY - height / 2;
-        float right = left + width;
-        float bottom = top + height;
+        float left = (width - pieSpec) / 2;
+        float top = (height - pieSpec) / 2;
+        float right = width - left;
+        float bottom = height - top;
 
         chartCompute.setMinViewport(new Viewport(left, top, right, bottom));
 

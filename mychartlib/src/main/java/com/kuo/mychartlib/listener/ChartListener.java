@@ -22,11 +22,14 @@ public interface ChartListener {
 
     ArrayList<? extends ChartData> getChartData();
 
+    AbsChartRenderer getAbsChartRenderer();
+
     int getOrientation();
 
     boolean isTouchEnable();
 
     void setAbsChartRenderer(AbsChartRenderer absChartRenderer);
+
 
     void setOrientation(int orientation);
 

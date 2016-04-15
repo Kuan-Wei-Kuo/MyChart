@@ -17,15 +17,12 @@ public class ComputeScroll {
         mScroller = new Scroller(context);
     }
 
-    float OffsetX = 0;
-    float OffsetY = 0;
     /**
      * 這邊並不打算使用Scroller去做滑動的運算，直接算出當前位置可以避免一些問題。
      * */
     protected void startScroll(float distanceX, float distanceY, ChartCompute chartCompute) {
 
         //為了多點觸碰的問題，我們滑動時使用distance來做主要方法。
-
         Viewport minViewport = chartCompute.getMinViewport();
         Viewport curViewport = chartCompute.getCurViewport();
 
@@ -96,4 +93,7 @@ public class ComputeScroll {
         mScroller.abortAnimation();
     }
 
+    protected Scroller getScroller() {
+        return mScroller;
+    }
 }
