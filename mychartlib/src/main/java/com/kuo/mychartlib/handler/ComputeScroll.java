@@ -25,7 +25,7 @@ public class ComputeScroll {
 
     private boolean canScrollX = false;
     private boolean canScrollY = false;
-    
+
     protected boolean startScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY, ChartCompute chartCompute) {
 
         Viewport minViewport = chartCompute.getMinViewport();

@@ -6,7 +6,8 @@
     <com.kuo.mychart.common.SlidingTabLayout
         android:id="@+id/slidingTabLayout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"/>
 
     <com.kuo.mychartlib.view.hack.HackViewPager
         android:id="@+id/viewPager"

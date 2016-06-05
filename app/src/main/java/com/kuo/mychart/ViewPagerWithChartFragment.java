@@ -73,9 +73,9 @@ public class ViewPagerWithChartFragment extends Fragment {
 
         ArrayList<String> titles = new ArrayList<>();
 
-        titles.add("ColumnChart");
-        titles.add("Tow Chart56t");
-        titles.add("PieChart");
+        titles.add("Column Chart");
+        titles.add("Scroll Chart");
+        titles.add("Pie Chart");
 
         return titles;
     }
