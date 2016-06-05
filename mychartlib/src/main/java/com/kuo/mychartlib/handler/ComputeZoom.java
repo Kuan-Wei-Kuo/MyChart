@@ -13,6 +13,8 @@ public class ComputeZoom {
 
     private float lastSpan, lastSpanX, lastSpanY;
 
+    private boolean canZoom = false;
+
     private PointF viewfocus = new PointF();
 
     protected void computeZoom(float scale, float focusX, float focusY, ChartCompute chartCompute) {
@@ -89,6 +91,7 @@ public class ComputeZoom {
                 left = right - chartCompute.getMinViewport().width();
 
             }
+
         }
 
         if (bottom - top < chartCompute.getMinViewport().height()) {
@@ -106,6 +109,7 @@ public class ComputeZoom {
                 top = bottom - chartCompute.getMinViewport().height();
 
             }
+
         }
 
         chartCompute.getCurViewport().left = Math.min(chartCompute.getMinViewport().left, left);
@@ -144,4 +148,7 @@ public class ComputeZoom {
         return scale;
     }
 
+    public boolean isCanZoom() {
+        return canZoom;
+    }
 }

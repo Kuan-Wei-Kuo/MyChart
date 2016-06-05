@@ -116,7 +116,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
         float size = curViewport.height() / margin;
 
-        float maxValue = chartCompute.getMaxValue() + 20;
+        float maxValue = chartCompute.getMaxValue();
 
 
         for(int i = 1 ; i <= size; i++) {
@@ -145,7 +145,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
         float size = curViewport.height() / margin;
 
-        float maxValue = chartCompute.getMaxValue() + 20;
+        float maxValue = chartCompute.getMaxValue();
 
         String floatFormat = "%.1f";
 
@@ -160,7 +160,6 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
                         y, textPaint);
             }
         }
-
     }
 
     private void drawAxisX(Canvas canvas) {
@@ -217,7 +216,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
 
         }
 
-        chartCompute.setMaxValue(maxValue);
+        chartCompute.setMaxValue(maxValue + 1);
         chartCompute.setMaxTextWidth(maxTextWidth);
         chartCompute.setMaxTextHeight(maxTextHeight);
 
@@ -255,7 +254,7 @@ public abstract class AbsColumnBase extends AbsChartRenderer {
         for(RectF rectF : rectFs) {
 
             float left = curViewport.left + count * (columnWidth + columnMargin) + chartCompute.getPadding();
-            float top = curViewport.bottom - curViewport.height() / (chartCompute.getMaxValue() + 20) * mChartData.get(count).getValue();
+            float top = curViewport.bottom - curViewport.height() / (chartCompute.getMaxValue()) * mChartData.get(count).getValue();
             float right = left + columnWidth;
             float bottom = curViewport.bottom;
 

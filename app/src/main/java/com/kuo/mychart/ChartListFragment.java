@@ -69,6 +69,12 @@ public class ChartListFragment extends Fragment {
                         fragmentTransaction.addToBackStack("lineFragment");
                         sub_text = "Horizontal Line Chart";
                         break;
+                    case 3:
+                        ViewPagerWithChartFragment viewPagerWithChartFragment = new ViewPagerWithChartFragment();
+                        fragmentTransaction.replace(R.id.frame_layout, viewPagerWithChartFragment, "viewPagerWithChartFragment");
+                        fragmentTransaction.addToBackStack("viewPagerWithChartFragment");
+                        sub_text = "ViewPager With Chart";
+                        break;
                 }
 
                 fragmentTransaction.commit();
@@ -92,8 +98,8 @@ public class ChartListFragment extends Fragment {
 
         String interviewD = "A simple demonstration of the ";
 
-        String[] name = {"Pie Chart", "Horizontal Column Chart", "Horizontal Line Chart"};
-        String[] interview = {interviewD + "pie chart", interviewD + "horizontal column chart", interviewD + "horizontal line chart"};
+        String[] name = {"Pie Chart", "Horizontal Column Chart", "Horizontal Line Chart", "ViewPager with Chart"};
+        String[] interview = {interviewD + "pie chart", interviewD + "horizontal column chart", interviewD + "horizontal line chart", ""};
 
         for(int i = 0 ; i < name.length ; i++) {
             ChartItemData chartItemData = new ChartItemData(name[i], interview[i]);

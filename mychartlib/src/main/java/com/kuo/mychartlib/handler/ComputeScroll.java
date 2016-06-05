@@ -1,13 +1,17 @@
 package com.kuo.mychartlib.handler;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Scroller;
 
 import com.kuo.mychartlib.model.Viewport;
 import com.kuo.mychartlib.presenter.ChartCompute;
 
-/*
- * Created by Kuo on 2016/4/1.
+/**
+ * Compute scroll and horizontal or vertical.
+ *
+ * @author Kuo
  */
 public class ComputeScroll {
 
@@ -17,12 +21,13 @@ public class ComputeScroll {
         mScroller = new Scroller(context);
     }
 
-    /**
-     * 這邊並不打算使用Scroller去做滑動的運算，直接算出當前位置可以避免一些問題。
-     * */
-    protected void startScroll(float distanceX, float distanceY, ChartCompute chartCompute) {
+    private static final int SLIDE_THRESHOLD = 10;
 
-        //為了多點觸碰的問題，我們滑動時使用distance來做主要方法。
+    private boolean canScrollX = false;
+    private boolean canScrollY = false;
+    
+    protected boolean startScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY, ChartCompute chartCompute) {
+
         Viewport minViewport = chartCompute.getMinViewport();
         Viewport curViewport = chartCompute.getCurViewport();
 
@@ -31,27 +36,46 @@ public class ComputeScroll {
         float right  = left + curViewport.width();
         float bottom = top + curViewport.height();
 
-        boolean enableX = false;
-        boolean enableY = false;
+        canScrollX = false;
+        canScrollY = false;
 
         if(curViewport.left < minViewport.left && distanceX <= 0) {
-            enableX = true;
+            canScrollX = true;
         } else if(curViewport.right > minViewport.right && distanceX >= 0) {
-            enableX = true;
+            canScrollX = true;
         }
 
         if(curViewport.top < minViewport.top && distanceY <= 0) {
-            enableY = true;
+            canScrollY = true;
         } else if(curViewport.bottom > minViewport.bottom && distanceY >= 0) {
-            enableY = true;
+            canScrollY = true;
         }
 
-        if(enableX || enableY)
+
+        /**
+         * For ScrollView and ViewPager with chart, I need to check horizontal or vertical.
+         *
+         * */
+        float diffY = e2.getY() - e1.getY();
+        float diffX = e2.getX() - e1.getX();
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            if (Math.abs(diffX) > SLIDE_THRESHOLD && canScrollX && !canScrollY) {
+                canScrollY = true;
+            }
+        } else if (Math.abs(diffX) < Math.abs(diffY))  {
+            if (Math.abs(diffY) > SLIDE_THRESHOLD && !canScrollX && canScrollY) {
+                canScrollX = true;
+            }
+        }
+
+        if(canScrollY || canScrollX)
             chartCompute.containsCurrentViewport(left, top, right, bottom);
+
+        return canScrollX || canScrollY;
     }
 
     /**
-     * 算出我們最小與最大的滑動範圍並且啟動Fling。
+     * Compute max and min rang to start fling.
      * */
     protected void startFling(int velocityX, int velocityY, ChartCompute chartCompute) {
 
@@ -93,7 +117,16 @@ public class ComputeScroll {
         mScroller.abortAnimation();
     }
 
+    public boolean isCanScrollX() {
+        return canScrollX;
+    }
+
+    public boolean isCanScrollY() {
+        return canScrollY;
+    }
+
     protected Scroller getScroller() {
         return mScroller;
     }
+
 }

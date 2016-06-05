@@ -61,7 +61,15 @@ public abstract class AbsChartView extends View implements ChartListener {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return chartTouchHandler.onTouchEvent(event);
+
+        boolean needInvalidate = false;
+
+        needInvalidate = chartTouchHandler.onTouchEvent(event, getParent()) || needInvalidate;
+
+        if(needInvalidate)
+            ViewCompat.postInvalidateOnAnimation(getView());
+
+        return needInvalidate;
     }
 
     @Override

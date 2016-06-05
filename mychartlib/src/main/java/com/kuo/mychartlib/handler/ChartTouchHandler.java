@@ -1,10 +1,11 @@
 package com.kuo.mychartlib.handler;
 
 import android.content.Context;
-import android.support.v4.view.ViewCompat;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.ViewParent;
 
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.model.SelectData;
@@ -39,6 +40,8 @@ public class ChartTouchHandler {
 
     protected boolean enable = true;
 
+    protected ViewParent viewParent;
+
     public ChartTouchHandler(Context context, ChartListener chartListener) {
 
         this.chartListener = chartListener;
@@ -64,21 +67,46 @@ public class ChartTouchHandler {
         this.enable = enable;
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event, ViewParent viewParent) {
+
+        this.viewParent = viewParent;
+
+        boolean isInvalidate = false;
 
         if(enable) {
 
-            boolean isInvalidate = scaleGestureDetector.onTouchEvent(event) && gestureDetector.onTouchEvent(event);
+            isInvalidate = gestureDetector.onTouchEvent(event);
+            isInvalidate = scaleGestureDetector.onTouchEvent(event) || isInvalidate;
 
-            boolean canSelect = computeSelect.onTouchEvent(event, chartListener.getSelectData());
+            isInvalidate = computeSelect.onTouchEvent(event, chartListener.getSelectData()) || isInvalidate;
 
-            if(isInvalidate || canSelect)
-                ViewCompat.postInvalidateOnAnimation(chartListener.getView());
+            if(scaleGestureDetector.isInProgress())
+                disallowParentInterceptTouchEvent();
 
-            return true;
         }
 
-        return false;
+        return isInvalidate;
+    }
+
+    private void disallowParentInterceptTouchEvent() {
+
+        if (viewParent != null)
+            viewParent.requestDisallowInterceptTouchEvent(true);
+
+    }
+
+    private void allowParentInterceptTouchEvent() {
+
+        if (viewParent != null) {
+
+            if (!computeScroll.isCanScrollX()
+                    && !scaleGestureDetector.isInProgress()) {
+                viewParent.requestDisallowInterceptTouchEvent(false);
+            } else if (!computeScroll.isCanScrollY()
+                    && !scaleGestureDetector.isInProgress()) {
+                viewParent.requestDisallowInterceptTouchEvent(false);
+            }
+        }
     }
 
     public boolean isEnable() {
@@ -106,7 +134,6 @@ public class ChartTouchHandler {
                 case VERTICAL:
                     computeZoom.computeVerticalZoom(scale, detector.getFocusX(), detector.getFocusY(), chartCompute);
                     break;
-
             }
             return true;
         }
@@ -118,6 +145,7 @@ public class ChartTouchHandler {
         public boolean onDown(MotionEvent e) {
 
             computeScroll.stopAnimation();
+            disallowParentInterceptTouchEvent();
 
             return true;
         }
@@ -125,9 +153,13 @@ public class ChartTouchHandler {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
-            computeScroll.startScroll(distanceX, distanceY, chartCompute);
+            boolean isScroll = computeScroll.startScroll(e1, e2, distanceX, distanceY, chartCompute);
 
-            return true;
+            allowParentInterceptTouchEvent();
+
+            return isScroll;
+
+
         }
 
         @Override

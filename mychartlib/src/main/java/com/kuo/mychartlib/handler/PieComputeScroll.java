@@ -1,10 +1,10 @@
 package com.kuo.mychartlib.handler;
 
 import android.content.Context;
+import android.view.MotionEvent;
 
 import com.kuo.mychartlib.listener.ChartListener;
 import com.kuo.mychartlib.presenter.ChartCompute;
-import com.kuo.mychartlib.renderer.PieChartRenderer;
 
 /*
  * Created by Kuo on 2016/4/15.
@@ -19,9 +19,8 @@ public class PieComputeScroll extends ComputeScroll {
     }
 
     @Override
-    protected void startScroll(float distanceX, float distanceY, ChartCompute chartCompute) {
-        super.startScroll(distanceX, distanceY, chartCompute);
-
+    protected boolean startScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY, ChartCompute chartCompute) {
+        return super.startScroll(e1, e2, distanceX, distanceY, chartCompute);
     }
 
     @Override
