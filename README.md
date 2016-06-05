@@ -8,7 +8,7 @@
 >>Update Compute for ViewPager and ScrollView with chart.
 ***
 
->MyChart is a sample & easy to use chart library for Android. It runs on API level 15 and upwards.
+>MyChart is a simple & easy to use chart library for Android. It runs on API level 15 and upwards.
 >It's had no animation and powerful, so it's very sample example.
 >if you have any question, you can writing e-mail for me.
 >Okay, thank you for wacthing.
