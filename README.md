@@ -1,8 +1,10 @@
 ###New Update 
->Update ChartTouchHandler.class and Add ChartScroll.class
->>更新水平滑動演算法，使用GestureDetector達到慣性移動的效果。
+>Add HackViewpager and ViewPager and ScrollView with chart.
+>>暫時解決ScaleGestureDetector與Viewpager相衝的問題。
+>>讓Chart可以與Viewpager ScrollView 三者同時使用。
 >>
->>Use GestureDetector to reach smooth move and fling move.
+>>When IllegalArgumentException Catching ViewPager onInterceptTouchEvent.
+>>Update Compute for ViewPager and ScrollView with chart.
 ***
 
 >MyChart is a sample & easy to use chart library for Android. It runs on API level 15 and upwards.
