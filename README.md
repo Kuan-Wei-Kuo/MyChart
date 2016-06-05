@@ -1,5 +1,6 @@
 ###New Update 
->Add HackViewpager and ViewPager and ScrollView with chart.
+>Add HackViewpager 
+>Add ViewPager and ScrollView with chart.
 >>暫時解決ScaleGestureDetector與Viewpager相衝的問題。
 >>讓Chart可以與Viewpager ScrollView 三者同時使用。
 >>
