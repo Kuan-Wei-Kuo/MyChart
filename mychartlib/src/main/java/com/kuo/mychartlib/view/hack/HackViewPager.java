@@ -10,7 +10,6 @@ import android.view.MotionEvent;
  * A lot of IllegalArgumentException: pointerIndex out of range. So, I found an answer, Just catching the problem and ignoring.
  * It's a simple solution, but it's not perfect.
  *
- * @author Kuo
  */
 
 public class HackViewPager extends ViewPager {
