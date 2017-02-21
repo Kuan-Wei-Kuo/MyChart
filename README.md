@@ -22,13 +22,13 @@
 >目前只有製作三種圖表，未來會繼續斟酌更新。
 
 ###長條圖 Column Chart
-<img width="500" height="300" src="https://googledrive.com/host/8j9oY6FHq05K62w7uzbo7PrlpjpLxzpz3wVckF7RYrg8KU6-UjaLhRRsecuKPc7-7iGxg67-vzchez8=w1920-h918-rw"/>
+<img width="500" height="300" src=""/>
 
 ###摺線圖 Line Chart
-<img width="500" height="300" src="https://googledrive.com/host/8j9oY6FHq05K62w7uzbo7PrlpjpLxzpz3wVckF7RYrg8KU6-UjaLhRRsecuKPc7-7iGxg67-vzchez8=w1920-h918-rw"/>
+<img width="500" height="300" src=""/>
 
 ###圓餅圖 Pie Chart
-<img width="500" height="300" src="https://googledrive.com/host/0B5fOJF9g7N2SUE5SWmlkSmNDMGs"/>
+<img width="500" height="300" src="https://photos.google.com/album/AF1QipP8AtQyriwdXnqDTpZQx0nCamvqzH-W7bm8N3WW/photo/AF1QipPSB3Cusi1hdIoegJ8V2EKslT3u7empfwWk8zDY"/>
 
 #How to Use
 
