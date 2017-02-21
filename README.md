@@ -28,7 +28,7 @@
 <img width="500" height="300" src=""/>
 
 ###圓餅圖 Pie Chart
-<img width="500" height="300" src="https://photos.google.com/album/AF1QipP8AtQyriwdXnqDTpZQx0nCamvqzH-W7bm8N3WW/photo/AF1QipPSB3Cusi1hdIoegJ8V2EKslT3u7empfwWk8zDY"/>
+<img width="500" height="300" src="https://lh3.googleusercontent.com/9DFkbnCTwEg0B2Z99xLT7fjcIasGsLI287NYbf6Njd7X1wY7nEcgaT2uoqnbKwE06sfsE79HxRjH66Q_GwhdN4FbbAg8wS1Vc0pqkjbiiUBho055GXp_VnK3qUPGuPwV9xUfM2FGS3rI-E8Piwy4KeJOEM1YtSOK86kcpAytif6vw13EEKCIJvcR7UhhZqnRX7tkF7iOdxzMmnjB_Dxzp2MhMAzX-CT75BTbt3-lhLZ4DvLltqlfliPA7BJBPmI_7Qxu80C2wAOzHd4hnwGZXB0Pjwyp7pSvrM5y10oG0n8h58aqvu-uyCtlG4pj3rsdsk26XogotdaKmMrYwc_YByRjFrNYaS3cz2XkJ9RjAWMuFWWIf3yIAMQNqOWOBCYosozsDoD97sIkCcXENYGEZgo3N-_Rl5Xs665L-HGdk7zNMkDXf0Nk3it5ErlLwhVYc2B5A3ur3NtKodZETy3ATtHsYCpKDXNLB-m3Z8TLA3aqw7OE1QJ5CD712mF3GDXjPKm8WdwSQQxes5gKu29G2dXATl8t5biQHGEqj6mIPLS7vITlo5cK_tF66Qah46ecAmB63h6lMXaDhHTdBc2YoI3n8QJ830Q7AireKs6E5WpZsb5nCFX8=w852-h512-no"/>
 
 #How to Use
 
